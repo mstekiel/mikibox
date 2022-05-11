@@ -384,7 +384,7 @@
             <span class="k">for</span> <span class="n">ev</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ev</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="n">n</span><span class="p">:</span><span class="n">n</span><span class="o">+</span><span class="n">degeneracy</span><span class="p">]:</span>
                 <span class="n">ev_components</span> <span class="o">=</span> <span class="p">[]</span>
                 <span class="k">for</span> <span class="n">c</span><span class="p">,</span><span class="n">bev</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ev</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">rawevbasis</span><span class="p">):</span>
-                    <span class="k">if</span> <span class="n">c</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">1e-15</span><span class="p">:</span>    <span class="c1"># Arbitrary tolerance</span>
                         <span class="n">ev_components</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;(</span><span class="si">{</span><span class="n">c</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">)|</span><span class="si">{</span><span class="n">bev</span><span class="si">}</span><span class="s1">&gt;&#39;</span><span class="p">)</span>
                         
                 <span class="n">level_str</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="s1">&#39; + &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ev_components</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
@@ -446,23 +446,27 @@
 
 
 
-<span class="k">def</span> <span class="nf">_rawneutronint</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">deg</span><span class="p">,</span> <span class="n">J2</span><span class="p">,</span> <span class="n">gJ</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_rawneutronint</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">J2_perp</span><span class="p">,</span> <span class="n">gJ</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Returns transition intensities in barn.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        E (1D array of floats): matrix of energy levels in meV</span>
-<span class="sd">        deg (1D array of floats): degeneracies of the levels</span>
-<span class="sd">        J2 (2D array of floats): matrix of squared J</span>
+<span class="sd">        E (2D array of floats): matrix of energy changes corresponding to transitions in meV</span>
+<span class="sd">        J2_perp (2D array of floats): matrix of squared J</span>
 <span class="sd">        gJ (float): Landé factor</span>
-<span class="sd">        T (float): temperature in *K*</span>
+<span class="sd">        T (float): temperature in **K**</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">r02</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">R0</span> <span class="o">*</span> <span class="n">C</span><span class="o">.</span><span class="n">R0</span>  <span class="o">*</span><span class="mf">1e28</span> <span class="c1"># to have value in barn</span>
     <span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">r02</span> <span class="o">*</span> <span class="n">gJ</span> <span class="o">*</span> <span class="n">gJ</span>
     
-    <span class="n">prst</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">E</span><span class="o">*</span><span class="n">C</span><span class="o">.</span><span class="n">eV2K</span><span class="o">/</span><span class="n">T</span><span class="p">)</span>
-    <span class="n">Z</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">prst</span><span class="o">*</span><span class="n">deg</span><span class="p">)</span> <span class="c1">#multiply with degeneracy of the level</span>
+    <span class="c1"># Calculate the occupancy of the levels at given temperature</span>
+    <span class="n">prst</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">E</span><span class="p">[</span><span class="mi">0</span><span class="p">,:]</span><span class="o">*</span><span class="n">C</span><span class="o">.</span><span class="n">eV2K</span><span class="o">/</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">Z</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">prst</span><span class="p">)</span>
     <span class="n">prst</span> <span class="o">=</span> <span class="n">prst</span> <span class="o">/</span> <span class="n">Z</span>
-    <span class="n">trans_int</span> <span class="o">=</span> <span class="n">J2</span> <span class="o">*</span> <span class="n">prst</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span> <span class="o">*</span> <span class="n">c</span>  <span class="c1">#transition intensities in barn</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">prst</span><span class="p">)</span>
+    
+    <span class="c1"># Multiply the matrix elements by uprobability of occupying certain level</span>
+    <span class="n">trans_int</span> <span class="o">=</span> <span class="n">J2_perp</span> <span class="o">*</span> <span class="n">prst</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span> <span class="o">*</span> <span class="n">c</span>  <span class="c1">#transition intensities in barn</span>
+    
     <span class="k">return</span> <span class="n">trans_int</span>
 
 <div class="viewcode-block" id="neutronint"><a class="viewcode-back" href="../../../source/crysfipy.html#mikibox.crysfipy.reion.neutronint">[docs]</a><span class="k">def</span> <span class="nf">neutronint</span><span class="p">(</span><span class="n">ion</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">direction</span> <span class="o">=</span> <span class="s1">&#39;powder&#39;</span><span class="p">):</span>
@@ -491,30 +495,32 @@
 <span class="sd">            </span>
 <span class="sd">    Raises:</span>
 <span class="sd">        ValueError </span>
-<span class="sd">            When an invalid :obj:`direction` parameter is chosen, or the dimension of the direction vector is not 3.</span>
+<span class="sd">            When an invalid ``direction`` parameter is chosen, or the dimension of the ``direction`` vector is not 3.</span>
 <span class="sd">        </span>
 <span class="sd">            </span>
 <span class="sd">        </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">jumps</span> <span class="o">=</span> <span class="n">ion</span><span class="o">.</span><span class="n">energy</span> <span class="o">-</span> <span class="n">ion</span><span class="o">.</span><span class="n">energy</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">jumps</span><span class="p">)</span>
     
     <span class="k">if</span> <span class="n">direction</span><span class="o">==</span><span class="s1">&#39;powder&#39;</span><span class="p">:</span>
         <span class="n">J2_perp</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">/</span> <span class="mi">3</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">ion</span><span class="o">.</span><span class="n">Jx</span><span class="p">))</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">ion</span><span class="o">.</span><span class="n">Jy</span><span class="p">))</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">ion</span><span class="o">.</span><span class="n">Jz</span><span class="p">)))</span>
     <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">direction</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
-        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">direction</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="n">Q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">direction</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">Q</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Dimension of the </span><span class="se">\&#39;</span><span class="s1">direction</span><span class="se">\&#39;</span><span class="s1"> vector is not 3&#39;</span><span class="p">)</span>
             
-        <span class="n">Qperp_projection</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">perp_matrix</span><span class="p">(</span><span class="n">direction</span><span class="p">)</span>
+        <span class="n">Qperp_projection</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">perp_matrix</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span>
         <span class="n">J</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ion</span><span class="o">.</span><span class="n">Jx</span><span class="p">,</span> <span class="n">ion</span><span class="o">.</span><span class="n">Jy</span><span class="p">,</span> <span class="n">ion</span><span class="o">.</span><span class="n">Jz</span><span class="p">])</span>
         <span class="n">J_perp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;ij,jkl&#39;</span><span class="p">,</span><span class="n">Qperp_projection</span><span class="p">,</span> <span class="n">J</span><span class="p">)</span>
-        <span class="n">J2_perp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">J2_perp</span><span class="p">))</span>
+        <span class="n">J2_perp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;ijk-&gt;jk&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">J_perp</span><span class="p">)))</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Invalid </span><span class="se">\&#39;</span><span class="s1">direction</span><span class="se">\&#39;</span><span class="s1"> parameter&#39;</span><span class="p">)</span>
+        
 
-    <span class="n">tint</span> <span class="o">=</span> <span class="n">_rawneutronint</span><span class="p">(</span><span class="n">ion</span><span class="o">.</span><span class="n">deg_e</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">ion</span><span class="o">.</span><span class="n">deg_e</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">J2</span><span class="p">,</span> <span class="n">ion</span><span class="o">.</span><span class="n">gJ</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
-    <span class="n">tint</span> <span class="o">=</span> <span class="n">tint</span><span class="p">[</span><span class="n">jumps</span><span class="o">.</span><span class="n">argsort</span><span class="p">()]</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">jumps</span><span class="p">),</span><span class="n">tint</span><span class="p">])</span> </div>
+    <span class="n">Dint</span> <span class="o">=</span> <span class="n">_rawneutronint</span><span class="p">(</span><span class="n">jumps</span><span class="p">,</span> <span class="n">J2_perp</span><span class="p">,</span> <span class="n">ion</span><span class="o">.</span><span class="n">gJ</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+    <span class="n">De</span> <span class="o">=</span> <span class="n">jumps</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+    <span class="n">sorting</span> <span class="o">=</span> <span class="n">De</span><span class="o">.</span><span class="n">argsort</span><span class="p">()</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">De</span><span class="p">[</span><span class="n">sorting</span><span class="p">],</span> <span class="n">Dint</span><span class="p">[</span><span class="n">sorting</span><span class="p">])</span> </div>
 
 <span class="k">def</span> <span class="nf">_rawsusceptibility</span><span class="p">(</span><span class="n">energy</span><span class="p">,</span> <span class="n">moment</span><span class="p">,</span> <span class="n">H_direction</span><span class="p">,</span> <span class="n">H_size</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Returns susceptibility calculated for energy levels at given temperature&quot;&quot;&quot;</span>

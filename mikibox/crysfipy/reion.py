@@ -362,7 +362,7 @@ def neutronint(ion, T, direction = 'powder'):
             
     Raises:
         ValueError 
-            When an invalid :obj:`direction` parameter is chosen, or the dimension of the :obj:`direction` vector is not 3.
+            When an invalid ``direction`` parameter is chosen, or the dimension of the ``direction`` vector is not 3.
         
             
         

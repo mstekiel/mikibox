@@ -1,7 +1,0 @@
-Mikibox package
-***************
-
-.. currentmodule:: mikibox.functions
-
-.. automodule:: mikibox.functions
-	:members:

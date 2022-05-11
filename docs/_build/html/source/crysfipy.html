@@ -1,0 +1,316 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>CrysFiPy under mikibox package &#8212; mikibox 0.1.0 documentation</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Mikibox package" href="mikibox.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+
+  <div id="navbar-start">
+    
+    
+<a class="navbar-brand" href="../index.html">
+<p class="title">mikibox</p>
+</a>
+
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    <li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="mikibox.html">
+  Mikibox package
+ </a>
+</li>
+
+<li class="toctree-l1 current active nav-item">
+ <a class="current reference internal nav-link" href="#">
+  CrysFiPy under mikibox package
+ </a>
+</li>
+
+    
+</ul>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+            
+            <!-- Only show if we have sidebars configured, else just a small margin  -->
+            <div class="col-12 col-md-3 bd-sidebar">
+              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    
+  </div>
+</nav>
+              </div>
+              <div class="sidebar-end-items">
+              </div>
+            </div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+              
+              <div class="toc-item">
+                
+
+<nav id="bd-toc-nav">
+    
+</nav>
+              </div>
+              
+              <div class="toc-item">
+                
+              </div>
+              
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                
+  <section id="module-mikibox.crysfipy.reion">
+<span id="crysfipy-under-mikibox-package"></span><h1>CrysFiPy under mikibox package<a class="headerlink" href="#module-mikibox.crysfipy.reion" title="Permalink to this headline">#</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="mikibox.crysfipy.reion.cfpars">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mikibox.crysfipy.reion.</span></span><span class="sig-name descname"><span class="pre">cfpars</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mikibox/crysfipy/reion.html#cfpars"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mikibox.crysfipy.reion.cfpars" title="Permalink to this definition">#</a></dt>
+<dd><p>Class representing set of crystal field parameters.</p>
+<p>It simplifies the creation of the CF parameter sets considering symmetry
+of the environment.
+Other modules expect that CF parameters are in <em>meV</em> (SI units). 
+But if you just want to diagonalize Hamiltonian, it is possible to use <em>K</em> (and results will be in <em>K</em>).</p>
+<p>Initialization can be done with named arguments or without. 
+If arguments are not named, symmetry is considered from the first string argument.
+Stevens parameters are considered differently for different symmetries in following order:</p>
+<div class="line-block">
+<div class="line">cubic: B40, B60</div>
+<div class="line">hexagonal: B20, B40, B44, B66</div>
+<div class="line">tetragonal: B20, B40, B44, B60, B64</div>
+<div class="line">orthorombic: B20, B22, B40, B42, B44, B60, B62, B64, B66</div>
+</div>
+<dl>
+<dt>Attributes:</dt><dd><dl>
+<dt>BXY (float, optional): Attribute corresponding to <span class="math notranslate nohighlight">\(B_X^Y\)</span> Stevens Parameters.</dt><dd><p>See Hutchings.  If at least one CF parameter is specified as a named argument, 
+non-named numerical parameters are ignored.</p>
+</dd>
+<dt>sym (str, optional): Symmetry of the crystal field</dt><dd><div class="line-block">
+<div class="line">c - cubic</div>
+<div class="line">h - hexagonal</div>
+<div class="line">t - tetragonal</div>
+<div class="line">o - orthorombic (default)</div>
+</div>
+</dd>
+</dl>
+</dd>
+<dt>Examples:</dt><dd><p>Create set of CF parameters by named parameters:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">cfpars</span><span class="p">(</span><span class="n">sym</span> <span class="o">=</span> <span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="n">B40</span> <span class="o">=</span> <span class="mi">10</span><span class="p">))</span>
+<span class="go">Set of CF parameters for cubic symmetry:</span>
+<span class="go">B40 = 10.0000</span>
+<span class="go">B60 = 0.0000</span>
+<span class="go">B44 = 50.0000</span>
+<span class="go">B64 = 0.0000</span>
+</pre></div>
+</div>
+<p>Use of non-named parameters:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">cfpars</span><span class="p">(</span><span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="go">Set of CF parameters for cubic symmetry:</span>
+<span class="go">B40 = 10.0000</span>
+<span class="go">B60 = 1.0000</span>
+<span class="go">B44 = 50.0000</span>
+<span class="go">B64 = -21.0000</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mikibox.crysfipy.reion.neutronint">
+<span class="sig-prename descclassname"><span class="pre">mikibox.crysfipy.reion.</span></span><span class="sig-name descname"><span class="pre">neutronint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ion</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">direction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'powder'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mikibox/crysfipy/reion.html#neutronint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mikibox.crysfipy.reion.neutronint" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns matrix of energy and transition intensity at given temperature.
+The intensities are evaluated based on the <span class="math notranslate nohighlight">\(|&lt;\Gamma_f|J_\perp|\Gamma_i&gt;|^2\)</span> matrix elements, which form a matrix <span class="math notranslate nohighlight">\(|J_\perp|^2\)</span>.
+Two main cases are implemented and encoded in the <code class="xref py py-data docutils literal notranslate"><span class="pre">direction</span></code> parameter.</p>
+<dl>
+<dt>Parameters:</dt><dd><dl>
+<dt>ion<span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">crysfipy.reion.re</span></code> </span></dt><dd><p>Rare-earth ion object</p>
+</dd>
+<dt>T<span class="classifier">float</span></dt><dd><p>Temperature in <em>K</em></p>
+</dd>
+<dt>direction<span class="classifier">‘powder’ or ndarray, optional</span></dt><dd><p>Scheme according to which <span class="math notranslate nohighlight">\(|J_\perp|^2\)</span> is calculated.</p>
+<ul class="simple">
+<li><p>‘powder’ :  <span class="math notranslate nohighlight">\(|J_\perp|^2 = 2/3(|J_x|^2+|J_y|^2+|J_z|^2)\)</span> (default)</p></li>
+<li><p>3x float - vector representing a direction in the reciprocal space in respect to which a perpendicular projection of <span class="math notranslate nohighlight">\(|J_\perp|^2\)</span> will be calculated.</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>energies<span class="classifier">ndarray</span></dt><dd><p>Array containing energies of the transitions</p>
+</dd>
+<dt>intensities<span class="classifier">ndarray</span></dt><dd><p>Array containing intensities of the transitions</p>
+</dd>
+</dl>
+</dd>
+<dt>Raises:</dt><dd><dl class="simple">
+<dt>ValueError </dt><dd><p>When an invalid <code class="xref py py-obj docutils literal notranslate"><span class="pre">direction</span></code> parameter is chosen, or the dimension of the direction vector is not 3.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mikibox.crysfipy.reion.re">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mikibox.crysfipy.reion.</span></span><span class="sig-name descname"><span class="pre">re</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cfp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calculate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mikibox/crysfipy/reion.html#re"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mikibox.crysfipy.reion.re" title="Permalink to this definition">#</a></dt>
+<dd><p>Object representing rare-earth ion in CF potential</p>
+<dl class="simple">
+<dt>Attributes:</dt><dd><p>name (str): Name of the ion.
+field (1D array of floats): external magnetic field applied in <em>T</em>.
+cfp (<code class="xref py py-obj docutils literal notranslate"><span class="pre">crysfipy.reion.cfpars</span></code>): Crystal field parameters
+calculate (bool, optional): If true (default) then it automatically diagonalizes Hamiltonian and calculates energy levels.</p>
+</dd>
+</dl>
+<p>Examples:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ce</span> <span class="o">=</span> <span class="n">re</span><span class="p">(</span><span class="s2">&quot;Ce&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ce</span><span class="p">)</span>
+<span class="go">Energy levels:</span>
+<span class="go">E(0) =  0.0000   2fold-degenerated</span>
+<span class="go">E(1) =  3600.0000        4fold-degenerated</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="mikibox.crysfipy.reion.re.getlevels">
+<span class="sig-name descname"><span class="pre">getlevels</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mikibox/crysfipy/reion.html#re.getlevels"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mikibox.crysfipy.reion.re.getlevels" title="Permalink to this definition">#</a></dt>
+<dd><p>Calculate degeneracy of the levels and sort the matrix</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mikibox.crysfipy.reion.susceptibility">
+<span class="sig-prename descclassname"><span class="pre">mikibox.crysfipy.reion.</span></span><span class="sig-name descname"><span class="pre">susceptibility</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ion</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mikibox/crysfipy/reion.html#susceptibility"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mikibox.crysfipy.reion.susceptibility" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns susceptibility calculated for given ion at given temperature</p>
+</dd></dl>
+
+</section>
+
+
+              </div>
+              
+              
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="mikibox.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Mikibox package</p>
+        </div>
+    </a>
+</div>
+              
+          </main>
+          
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+<footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright 2022, Michal Stekiel.<br>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
+</p>
+    </div>
+    
+  </div>
+</footer>
+  </body>
+</html>

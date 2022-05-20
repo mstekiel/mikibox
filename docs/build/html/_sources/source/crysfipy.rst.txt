@@ -3,5 +3,6 @@ CrysFiPy under mikibox package
 
 .. currentmodule:: mikibox.crysfipy
 
-.. automodule:: mikibox.crysfipy.reion
+.. automodule:: mikibox.crysfipy.observables
 	:members:
+	

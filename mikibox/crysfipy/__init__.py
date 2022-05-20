@@ -1,3 +1,5 @@
+# Original copyright:
+
 # Copyright 2014-2018 Petr Čermák, Jan Zubáč and Karel Pajskr
 # This file is part of CrysFiPy.
 # CrysFiPy is free software: you can redistribute it and/or modify
@@ -11,8 +13,16 @@
 # GNU General Public License for more details.
 # <http://www.gnu.org/licenses/>.
 
-__version__ = '0.5'
+# I have done major reworking of the apckage to make it usable for my own purposes.
+# Michal Stekiel
 
-from .cfmatrix import *
-from .const import *
-from .reion import *
+__version__ = '1.1'
+
+# Import main classes
+from .ion import Ion
+from .cefpars import CEFpars
+from .cefion import CEFion
+
+# Import the functions
+from .cefmatrices import *
+from .observables import *

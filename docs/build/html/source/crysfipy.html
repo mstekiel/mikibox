@@ -147,77 +147,60 @@
               
               <div>
                 
-  <section id="module-mikibox.crysfipy.reion">
-<span id="crysfipy-under-mikibox-package"></span><h1>CrysFiPy under mikibox package<a class="headerlink" href="#module-mikibox.crysfipy.reion" title="Permalink to this headline">#</a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="mikibox.crysfipy.reion.cfpars">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mikibox.crysfipy.reion.</span></span><span class="sig-name descname"><span class="pre">cfpars</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mikibox/crysfipy/reion.html#cfpars"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mikibox.crysfipy.reion.cfpars" title="Permalink to this definition">#</a></dt>
-<dd><p>Class representing set of crystal field parameters.</p>
-<p>It simplifies the creation of the CF parameter sets considering symmetry
-of the environment.
-Other modules expect that CF parameters are in <em>meV</em> (SI units). 
-But if you just want to diagonalize Hamiltonian, it is possible to use <em>K</em> (and results will be in <em>K</em>).</p>
-<p>Initialization can be done with named arguments or without. 
-If arguments are not named, symmetry is considered from the first string argument.
-Stevens parameters are considered differently for different symmetries in following order:</p>
-<div class="line-block">
-<div class="line">cubic: B40, B60</div>
-<div class="line">hexagonal: B20, B40, B44, B66</div>
-<div class="line">tetragonal: B20, B40, B44, B60, B64</div>
-<div class="line">orthorombic: B20, B22, B40, B42, B44, B60, B62, B64, B66</div>
-</div>
-<dl>
-<dt>Attributes:</dt><dd><dl>
-<dt>BXY (float, optional): Attribute corresponding to <span class="math notranslate nohighlight">\(B_X^Y\)</span> Stevens Parameters.</dt><dd><p>See Hutchings.  If at least one CF parameter is specified as a named argument, 
-non-named numerical parameters are ignored.</p>
+  <section id="module-mikibox.crysfipy.observables">
+<span id="crysfipy-under-mikibox-package"></span><h1>CrysFiPy under mikibox package<a class="headerlink" href="#module-mikibox.crysfipy.observables" title="Permalink to this headline">#</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="mikibox.crysfipy.observables.boltzman_population">
+<span class="sig-prename descclassname"><span class="pre">mikibox.crysfipy.observables.</span></span><span class="sig-name descname"><span class="pre">boltzman_population</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">energies</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temperature</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mikibox/crysfipy/observables.html#boltzman_population"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mikibox.crysfipy.observables.boltzman_population" title="Permalink to this definition">#</a></dt>
+<dd><p>Calculate the population of energy levels at given temperature based on the Boltzmann statistic.</p>
+<p><span class="math notranslate nohighlight">\(n_i = \frac{1}{Z} e^{-E_i/k_B T}\)</span></p>
+<p><span class="math notranslate nohighlight">\(Z = \sum_i e^{-Ei/k_BT}\)</span></p>
+<p>One important distinction, is that this function works with eigenvalues (energies) of eigenvectors from the whole Hilbert space, as it needs to evaluate <span class="math notranslate nohighlight">\(Z\)</span> on its own. This works well for the total angular momentum Hilbert space, and does care about degeneracies.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><dl class="simple">
+<dt>energies<span class="classifier">array_like</span></dt><dd><p>List of energy levels in meV units</p>
 </dd>
-<dt>sym (str, optional): Symmetry of the crystal field</dt><dd><div class="line-block">
-<div class="line">c - cubic</div>
-<div class="line">h - hexagonal</div>
-<div class="line">t - tetragonal</div>
-<div class="line">o - orthorombic (default)</div>
-</div>
+<dt>tmperature<span class="classifier">float</span></dt><dd><p>Temperature at which to evaluate the statistic</p>
 </dd>
 </dl>
 </dd>
-<dt>Examples:</dt><dd><p>Create set of CF parameters by named parameters:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">cfpars</span><span class="p">(</span><span class="n">sym</span> <span class="o">=</span> <span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="n">B40</span> <span class="o">=</span> <span class="mi">10</span><span class="p">))</span>
-<span class="go">Set of CF parameters for cubic symmetry:</span>
-<span class="go">B40 = 10.0000</span>
-<span class="go">B60 = 0.0000</span>
-<span class="go">B44 = 50.0000</span>
-<span class="go">B64 = 0.0000</span>
-</pre></div>
-</div>
-<p>Use of non-named parameters:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">cfpars</span><span class="p">(</span><span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-<span class="go">Set of CF parameters for cubic symmetry:</span>
-<span class="go">B40 = 10.0000</span>
-<span class="go">B60 = 1.0000</span>
-<span class="go">B44 = 50.0000</span>
-<span class="go">B64 = -21.0000</span>
-</pre></div>
-</div>
+<dt>Returns:</dt><dd><p>List of occupation probabilities for each energy level.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="mikibox.crysfipy.reion.neutronint">
-<span class="sig-prename descclassname"><span class="pre">mikibox.crysfipy.reion.</span></span><span class="sig-name descname"><span class="pre">neutronint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ion</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">direction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'powder'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mikibox/crysfipy/reion.html#neutronint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mikibox.crysfipy.reion.neutronint" title="Permalink to this definition">#</a></dt>
-<dd><p>Returns matrix of energy and transition intensity at given temperature.
-The intensities are evaluated based on the <span class="math notranslate nohighlight">\(|&lt;\Gamma_f|J_\perp|\Gamma_i&gt;|^2\)</span> matrix elements, which form a matrix <span class="math notranslate nohighlight">\(|J_\perp|^2\)</span>.
-Two main cases are implemented and encoded in the <code class="xref py py-data docutils literal notranslate"><span class="pre">direction</span></code> parameter.</p>
+<dt class="sig sig-object py" id="mikibox.crysfipy.observables.magnetization">
+<span class="sig-prename descclassname"><span class="pre">mikibox.crysfipy.observables.</span></span><span class="sig-name descname"><span class="pre">magnetization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cefion</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Hfield</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mikibox/crysfipy/observables.html#magnetization"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mikibox.crysfipy.observables.magnetization" title="Permalink to this definition">#</a></dt>
+<dd><p>Calculate the magnetization of the single ion in the crystal field.
+<span class="math notranslate nohighlight">\(M_\alpha = g_J \sum_n p_n &lt;\lambda_n | \hat{J}_\alpha | \lambda_n&gt;\)</span></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mikibox.crysfipy.observables.neutronint">
+<span class="sig-prename descclassname"><span class="pre">mikibox.crysfipy.observables.</span></span><span class="sig-name descname"><span class="pre">neutronint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cefion</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Q</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'powder'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ei</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000000.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mikibox/crysfipy/observables.html#neutronint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mikibox.crysfipy.observables.neutronint" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns matrix of energies and inelastic neutron scattering spectral weights for all possible transitions at given temperature. The spectral weight is calculated by equation from Enderle book following Stephane Raymond article.</p>
+<div class="line-block">
+<div class="line"><span class="math notranslate nohighlight">\(S(\vec{Q},\omega) = N (\gamma r_0)^2 f^2_m(Q) e^{-2W(Q)} \sum_{if} \frac{k_f}{k_i} p_i |&lt;\lambda_f|J_\perp|\lambda_i&gt;|^2 \delta(E_i - E_f - \hbar \omega)\)</span></div>
+<div class="line"><span class="math notranslate nohighlight">\(N (\gamma r_0)^2\)</span> : ignored, acts as units.</div>
+<div class="line"><span class="math notranslate nohighlight">\(f^2_m(Q)\)</span> : magnetic form factor, taken from internal tables in <code class="docutils literal notranslate"><span class="pre">mikibox.crysfipy.Ion</span></code> class.</div>
+<div class="line"><span class="math notranslate nohighlight">\(e^{-2W(Q)}\)</span> : <span class="math notranslate nohighlight">\(W(Q)\)</span> is the Debye-Waller factor. It is quite problematic, is set to 1 at the moment.</div>
+<div class="line"><span class="math notranslate nohighlight">\(\frac{k_f}{k_i}\)</span> : scaling factor calculated from energy, which is used more widely <span class="math notranslate nohighlight">\(\frac{k_f}{k_i} = \sqrt{1-\frac{\Delta E}{E_i}}\)</span>. there is a minus under the square root, because positive energy transfer corresponds to neutron energy loss.</div>
+<div class="line"><span class="math notranslate nohighlight">\(p_i\)</span> : Boltzmann population factor.</div>
+<div class="line"><span class="math notranslate nohighlight">\(|&lt;\lambda_f|J_\perp|\lambda_i&gt;|^2\)</span> : matrix elements, exact description depends on <code class="docutils literal notranslate"><span class="pre">Q</span></code>, see below.</div>
+</div>
+<p>The intensities are evaluated based on the <span class="math notranslate nohighlight">\(|&lt;\lambda_f|J_\perp|\lambda_i&gt;|^2\)</span> matrix elements, which form a matrix <span class="math notranslate nohighlight">\(|J_\perp|^2\)</span>.
+Two main cases are implemented and encoded in the <code class="xref py py-data docutils literal notranslate"><span class="pre">Q</span></code> parameter.</p>
 <dl>
 <dt>Parameters:</dt><dd><dl>
-<dt>ion<span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">crysfipy.reion.re</span></code> </span></dt><dd><p>Rare-earth ion object</p>
+<dt>cefion<span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">crysfipy.reion.CEFion</span></code> </span></dt><dd><p>Rare-earth ion in the crystal field</p>
 </dd>
 <dt>T<span class="classifier">float</span></dt><dd><p>Temperature in <em>K</em></p>
 </dd>
-<dt>direction<span class="classifier">‘powder’ or ndarray, optional</span></dt><dd><p>Scheme according to which <span class="math notranslate nohighlight">\(|J_\perp|^2\)</span> is calculated.</p>
+<dt>Q<span class="classifier">‘powder’ or ndarray, optional</span></dt><dd><p>Scheme according to which <span class="math notranslate nohighlight">\(|J_\perp|^2\)</span> is calculated.</p>
 <ul class="simple">
-<li><p>‘powder’ :  <span class="math notranslate nohighlight">\(|J_\perp|^2 = 2/3(|J_x|^2+|J_y|^2+|J_z|^2)\)</span> (default)</p></li>
-<li><p>3x float - vector representing a direction in the reciprocal space in respect to which a perpendicular projection of <span class="math notranslate nohighlight">\(|J_\perp|^2\)</span> will be calculated.</p></li>
+<li><p>powder :  <span class="math notranslate nohighlight">\(|&lt;\lambda_f|J_\perp|\lambda_i&gt;|^2 = 2/3\sum_\alpha |&lt;\lambda_f|J_\alpha|\lambda_i&gt;|^2\)</span> (default).</p></li>
+<li><p>(3,) float : <span class="math notranslate nohighlight">\(|&lt;\lambda_f|J_\perp|\lambda_i&gt;|^2 = \sum_\alpha (1-\frac{Q_\alpha}{Q})|&lt;\lambda_f|J_\alpha|\lambda_i&gt;|^2\)</span>. Q is a vector representing a direction in the reciprocal space in respect to which a perpendicular projection of <span class="math notranslate nohighlight">\(J\)</span> will be calculated.</p></li>
 </ul>
 </dd>
 </dl>
@@ -230,44 +213,56 @@ Two main cases are implemented and encoded in the <code class="xref py py-data d
 </dl>
 </dd>
 <dt>Raises:</dt><dd><dl class="simple">
-<dt>ValueError </dt><dd><p>When an invalid <code class="docutils literal notranslate"><span class="pre">direction</span></code> parameter is chosen, or the dimension of the <code class="docutils literal notranslate"><span class="pre">direction</span></code> vector is not 3.</p>
+<dt>ValueError </dt><dd><p>When an invalid <code class="docutils literal notranslate"><span class="pre">Q</span></code> parameter is chosen, or the dimension of the <code class="docutils literal notranslate"><span class="pre">Q</span></code> vector is not 3.</p>
+</dd>
+<dt>RuntimeWarning</dt><dd><p>When Q=[0,0,0], where the spectral weight is ill defined.</p>
 </dd>
 </dl>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="mikibox.crysfipy.reion.re">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mikibox.crysfipy.reion.</span></span><span class="sig-name descname"><span class="pre">re</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cfp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calculate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mikibox/crysfipy/reion.html#re"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mikibox.crysfipy.reion.re" title="Permalink to this definition">#</a></dt>
-<dd><p>Object representing rare-earth ion in CF potential</p>
-<dl class="simple">
-<dt>Attributes:</dt><dd><p>name (str): Name of the ion.
-field (1D array of floats): external magnetic field applied in <em>T</em>.
-cfp (<code class="xref py py-obj docutils literal notranslate"><span class="pre">crysfipy.reion.cfpars</span></code>): Crystal field parameters
-calculate (bool, optional): If true (default) then it automatically diagonalizes Hamiltonian and calculates energy levels.</p>
-</dd>
-</dl>
-<p>Examples:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ce</span> <span class="o">=</span> <span class="n">re</span><span class="p">(</span><span class="s2">&quot;Ce&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ce</span><span class="p">)</span>
-<span class="go">Energy levels:</span>
-<span class="go">E(0) =  0.0000   2fold-degenerated</span>
-<span class="go">E(1) =  3600.0000        4fold-degenerated</span>
-</pre></div>
-</div>
-<dl class="py method">
-<dt class="sig sig-object py" id="mikibox.crysfipy.reion.re.getlevels">
-<span class="sig-name descname"><span class="pre">getlevels</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mikibox/crysfipy/reion.html#re.getlevels"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mikibox.crysfipy.reion.re.getlevels" title="Permalink to this definition">#</a></dt>
-<dd><p>Calculate degeneracy of the levels and sort the matrix</p>
-</dd></dl>
-
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="mikibox.crysfipy.reion.susceptibility">
-<span class="sig-prename descclassname"><span class="pre">mikibox.crysfipy.reion.</span></span><span class="sig-name descname"><span class="pre">susceptibility</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ion</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mikibox/crysfipy/reion.html#susceptibility"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mikibox.crysfipy.reion.susceptibility" title="Permalink to this definition">#</a></dt>
-<dd><p>Returns susceptibility calculated for given ion at given temperature</p>
+<dt class="sig sig-object py" id="mikibox.crysfipy.observables.susceptibility">
+<span class="sig-prename descclassname"><span class="pre">mikibox.crysfipy.observables.</span></span><span class="sig-name descname"><span class="pre">susceptibility</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cefion</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Hfield_direction</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mikibox/crysfipy/observables.html#susceptibility"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mikibox.crysfipy.observables.susceptibility" title="Permalink to this definition">#</a></dt>
+<dd><p>Calculate the magnetic susceptibility at given temperature.</p>
+<p>The susceptibility is calculated as a numerical derivative of the magnetization. But it seems there are some other smart methods to calculate it, so take a look into these japanese papers.</p>
+<dl>
+<dt>Parameters:</dt><dd><dl>
+<dt>ion<span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">crysfipy.reion.CEFion</span></code></span></dt><dd><p>Rare-earth ion in crystal field        T : float
+Temperature</p>
+</dd>
+<dt>Hfield_direction:</dt><dd><p>Direction of the applied magnetic field.</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><p>List of susceptibility values calculated at given temperatures</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mikibox.crysfipy.observables.thermodynamics">
+<span class="sig-prename descclassname"><span class="pre">mikibox.crysfipy.observables.</span></span><span class="sig-name descname"><span class="pre">thermodynamics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cefion</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mikibox/crysfipy/observables.html#thermodynamics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mikibox.crysfipy.observables.thermodynamics" title="Permalink to this definition">#</a></dt>
+<dd><p>Calculate the fundamental thermodynamic values as a function of temperature.</p>
+<p>This is all calculated together taking advantage of the fact that all thermodynamics can be determined from the partition function <span class="math notranslate nohighlight">\(Z\)</span>, upon differentiation on <span class="math notranslate nohighlight">\(\beta\)</span>, where <span class="math notranslate nohighlight">\(\beta = \frac{1}{k_B T}\)</span>.</p>
+<div class="line-block">
+<div class="line">Partition function: <span class="math notranslate nohighlight">\(Z = \sum_n e^{-\beta E_n}\)</span></div>
+<div class="line">Average energy: <span class="math notranslate nohighlight">\(\langle E \rangle = - \frac{\partial Z}{\partial \beta}\)</span></div>
+<div class="line">Entropy: <span class="math notranslate nohighlight">\(S = k_B ( \ln Z - \beta \frac{\partial Z}{\partial \beta} )\)</span></div>
+<div class="line">Heat capacity: <span class="math notranslate nohighlight">\(C_V = k_B \beta^2 \frac{\partial^2 Z}{\partial \beta^2}\)</span></div>
+</div>
+<dl>
+<dt>Parameters:</dt><dd><dl>
+<dt>cefion<span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">crysfipy.CEFion</span></code></span></dt><dd><p>Rare-earth ion in crystal field</p>
+</dd>
+<dt>T<span class="classifier">ndarray</span></dt><dd><p>Temperature</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><p>Z, E, S CV : The partition function, average energy (internal energy), entropy and heat capacity, respectively.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>

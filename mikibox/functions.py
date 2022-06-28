@@ -1,5 +1,26 @@
 import numpy as np
 
+# Fitting functions and other
+def gauss_bkg(x,x0,A,sigma,bkg):
+    '''
+    Gaussian with constant background.
+    
+    :math:`f(x) = A exp(-(x-x_0)^2/(2 \\sigma^2)) + bkg`
+    
+    To convert to intensity of the peak :math:`I = \\sqrt{2 \\pi} A \\sigma`
+    '''
+    return A*np.exp(-(x-x0)**2/(2*sigma**2)) + bkg
+
+def gauss_satellites_bkg(x,x0,xs, As,sigmas,bkg):
+    '''
+    Gaussian with constant background.
+    
+    :math:`f(x) = A exp(-(x-x_0)^2/(2 \\sigma^2)) + bkg`
+    
+    To convert to intensity of the peak :math:`I = \\sqrt{2 \\pi} A \\sigma`
+    '''
+    return As*np.exp(-(x-x0-xs)**2/(2*sigmas**2)) + As*np.exp(-(x-x0+xs)**2/(2*sigmas**2)) + bkg
+
 # Rotations
 # All of them are right-handed
 def rotate(n, angle):

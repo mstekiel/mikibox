@@ -32,7 +32,7 @@ def boltzman_population(energies, temperature):
 def _rawneutronint(E, J2_perp, gJ, T):
     """Returns transition intensities in barn.
     
-    TODO I think the Bebye-Waller factor needs to be incorporated here for proper inter-Temperature comparisons
+    TODO I think the Debye-Waller factor needs to be incorporated here for proper inter-Temperature comparisons
 
     Args:
         E (2D array of floats): matrix of energy changes corresponding to transitions in meV

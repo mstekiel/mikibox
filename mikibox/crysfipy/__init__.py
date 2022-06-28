@@ -13,7 +13,7 @@
 # GNU General Public License for more details.
 # <http://www.gnu.org/licenses/>.
 
-# I have done major reworking of the apckage to make it usable for my own purposes.
+# I have done major reworking of the package to make it usable for my own purposes.
 # Michal Stekiel
 
 __version__ = '1.1'

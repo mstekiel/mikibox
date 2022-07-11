@@ -88,12 +88,10 @@ class Beamline():
         bkg_integral = popt[-1]*np.abs(x[0]-x[-1])
         
         I_integrated = integrate.simpson(y,x)-bkg_integral,
-        I_fit = popt[1]*np.sqrt(2*np.pi)*popt[2])
+        I_fit = popt[1]*np.sqrt(2*np.pi)*popt[2]
         
-        if 
+        if np.abs((I_integrated-I_fit)/I_integrated) > 0.1:
+            raise Warning('Interated intensity inconsistent with the fit one.')
         
-        return popt, pinit
         
-    def integrate_dataset(self, DATA):
-        for DATA_block in DATA:
-            
+        return I_integrated

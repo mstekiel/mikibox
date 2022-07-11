@@ -20,6 +20,27 @@ class PSI_ZEBRA(Beamline):
         self.nu_sense = 1
         self.nu_offset = 0
     
+    def integrate_dataset(self, DATA, normalize=True, scale=100):
+        '''
+        Integrate the dataset.
+        
+        Return
+            List containing entries as in the hkl file format
+        '''
+        list_hkl = []
+        for DATA_block in DATA:
+            h,k,l = [DATA_block[key] for key in 'hkl']
+            II = self.fit_integrate(DATA_block['x'], DATA_block['counts'])
+            dII = np.sqrt(II)
+            
+            # Normalize to monitor
+            if normalize:
+                II = scale*II/DATA_block['monitor']
+                dII = scale*dII/DATA_block['monitor']
+                
+            list_hkl.append([h,k,l,II,dII])
+            
+        return list_khl
         
     def get_refl(self, DATA,hkl):
         '''
@@ -258,6 +279,6 @@ class PSI_ZEBRA(Beamline):
             
             outfiles.append(outlines)
             
-#            print(self.calHKL(UB,HEADER['wavelength'],DATA_block['om'],DATA_block['tth'],DATA_block['nu']))
+            #print(self.calHKL(UB,HEADER['wavelength'],DATA_block['om'],DATA_block['tth'],DATA_block['nu']))
 
         return outfiles

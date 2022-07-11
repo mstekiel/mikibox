@@ -36,3 +36,20 @@ class Lattice:
         
         return out
     
+    
+# Additional functions
+
+def lattice_pars_from_UB(UB):
+    U, B = np.linalg.qr(UB)
+
+    a1,a2,a3 = np.linalg.inv(B)
+
+    a = np.sqrt(np.dot(a1,a1))
+    b = np.sqrt(np.dot(a2,a2))
+    c = np.sqrt(np.dot(a3,a3))
+
+    alp = np.degrees(np.arccos(np.dot(a2,a3)/(b*c)))
+    bet = np.degrees(np.arccos(np.dot(a1,a3)/(a*c)))
+    gam = np.degrees(np.arccos(np.dot(a1,a2)/(a*b)))
+
+    return ((a,b,c), (alp,bet,gam))

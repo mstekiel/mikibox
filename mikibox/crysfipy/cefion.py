@@ -11,7 +11,7 @@ import numpy as np
 
 class CEFion:
     """
-    Object representing a rare-earth ion in CF potential
+    Object representing a rare-earth ion in CF potential. It is internally calculated in the meV units.
     
     Parameters:
         ion : string
@@ -37,7 +37,7 @@ class CEFion:
         Jval : int/2
             The J value corresponding to the L+S quantum numbers. Not to be confused with the ``J`` operator.
         Hfield : array_like
-            Vector in real space corresponding to the external magnetic field.
+            Vector in real space corresponding to the external magnetic field in T units.
         cfp : ``crysfipy.reion.cfp``
             Crystal field parameters
         hamiltonian : ndarray
@@ -64,8 +64,7 @@ class CEFion:
         # TODO check if the Hfield parameter is appropriate
         self.Hfield = np.array(Hfield)
             
-        if type(cfp) is list:
-            cfp = CEFpars(*cfp)
+        # Assign CEF parameters as CEFpars class
         self.cfp = cfp
         
 
@@ -88,12 +87,16 @@ class CEFion:
         
         
         # THE HAMILTONIAN
-        B = self.cfp
-        H = B.B20 * O_20(Jval) + B.B22 * O_22(Jval) + \
-            B.B40 * O_40(Jval) + B.B42 * O_42(Jval) + B.B44 * O_44(Jval) + \
-            B.B60 * O_60(Jval) + B.B62 * O_62(Jval) + \
-            B.B64 * O_64(Jval) + B.B66 * O_66(Jval) + \
-            -C.uB * self.ion.gJ * np.einsum('ijk,i', self.J, self.Hfield)
+        H = -C.uB * self.ion.gJ * np.einsum('ijk,i', self.J, self.Hfield)
+        
+        # Store Stevens operators in the dictionary containing pointers tu functions
+        StevensOperator = { "B20":O_20, "B22":O_22,"B2m2":O_2m2,\
+                            "B40":O_40, "B42":O_42,"B4m2":O_4m2, "B43":O_43,"B4m3":O_4m3, "B44":O_44,"B4m4":O_4m4, \
+                            "B60":O_60, "B62":O_62,"B6m2":O_6m2, "B63":O_63,"B6m3":O_6m3, "B64":O_64,"B6m4":O_6m4, "B66":O_64,"B6m6":O_6m6}
+        for Bij_name, Bij_value in zip(self.cfp.B_names, self.cfp.B_values):
+            H += Bij_value * StevensOperator[Bij_name](Jval)
+            
+
             
         # Lets take cc of everything to get rid of complex eigenvalues.
         # Another idea is to take just cc of the Zeeman part which sometimes makes problems
@@ -164,7 +167,7 @@ class CEFion:
 
         self.degeneracies = np.array(deg_e)   
         
-    def __str__(self, precision=3):
+    def __str__(self, precision=4):
         """
         Nice printout of calculated parameters
         
@@ -181,16 +184,16 @@ class CEFion:
             level_str = ''
             energy = x[0]
             degeneracy = int(x[1])
-            level_str += f'E({level:d}) =\t{energy:.{precision}f}\t{degeneracy:2d}fold-degenerated\n'
+            level_str += f'E({level:d}) =\t{energy:.{precision}} meV\t{degeneracy:2d}fold-degenerated\n'
             
             # List degenerated eigenvectors
             for ev in self.eigenvectors.T[n:n+degeneracy]:
                 ev_components = []
                 for c,ket in zip(ev,self.freeionkets):
-                    if np.abs(c) > 1e-15:    # Arbitrary tolerance
+                    if np.abs(c) > 1/np.power(10,precision):    # Arbitrary tolerance
                         ev_components.append(f'({c:.{precision}f}){ket}')
                         
-                level_str += '\t' + ' + '.join(ev_components) + '\n'
+                level_str += f'ev_{level}: ' + ' + '.join(ev_components) + '\n'
 
             levels.append(level_str)
             n += degeneracy

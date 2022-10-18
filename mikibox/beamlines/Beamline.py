@@ -16,14 +16,14 @@ class Beamline():
     '''
 
     def __init__(self, omega_sense=1,omega_offset=0, gamma_sense=1,gamma_offset=0, nu_sense=1,nu_offset=0):
-        self.omega_sense = omega_sense
-        self.omega_offset = omega_offset
+        self._omega_sense = omega_sense
+        self._omega_offset = omega_offset
         
-        self.gamma_sense = gamma_sense
-        self.gamma_offset = gamma_offset
+        self._gamma_sense = gamma_sense
+        self._gamma_offset = gamma_offset
         
-        self.nu_sense = nu_sense
-        self.nu_offset = nu_offset
+        self._nu_sense = nu_sense
+        self._nu_offset = nu_offset
             
 
     def calHKL(self, UB, lbd, omega, gamma, nu):
@@ -34,8 +34,6 @@ class Beamline():
         angles in degrees
         U matrix convention: orthonormal matrix rotating crystal axes to experimental coordinate system.
         B matrix convention: upper triangle with crystal axes coordinate system in reciprocal space, with a*=1/a lengths
-        
-        For some reason the convention of the UB matrix from D23 requires to rotate the omega angle by -90 deg.
         '''
         omega = np.radians(self.omega_sense*omega + self.omega_offset)
         gamma = np.radians(self.gamma_sense*gamma + self.gamma_offset)
@@ -77,21 +75,25 @@ class Beamline():
         
         return 0, 0, bl, br
         
-    def fit_integrate(self, x, y):
+    def fit_integrate(self, x, y, silent=False):
+        # Determine initial parameters
         x0 = x[np.argmax(y)]
         s = 2*np.abs(x[1]-x[0])
-        I = max(y)
+        A = max(y)
         bkg = (y[0]+y[-1])/2
-        pinit = (x0,I,s,bkg)
-        popt, pcov = curve_fit(gauss_bkg, x,y, p0=pinit, bounds=([x[0],-np.inf,s,-np.inf],[x[-1],np.inf,np.inf,np.inf]))
+        eta = 0.5
+        pinit = (x0,A,s,eta,bkg)
+        
+        # Fit gaussian
+        popt, pcov = curve_fit(pseudoVoigt_bkg, x,y, p0=pinit, bounds=([x[0],0,s,0,-np.inf],[x[-1],np.inf,(x[-1]-x[0])/2,1,np.inf]))
         
         bkg_integral = popt[-1]*np.abs(x[0]-x[-1])
         
-        I_integrated = integrate.simpson(y,x)-bkg_integral,
+        I_integrated = integrate.simpson(y,x)-bkg_integral
         I_fit = popt[1]*np.sqrt(2*np.pi)*popt[2]
         
-        if np.abs((I_integrated-I_fit)/I_integrated) > 0.1:
+        if np.abs((I_integrated-I_fit)/I_integrated) > 0.1 and  not silent:
             raise Warning('Interated intensity inconsistent with the fit one.')
         
         
-        return I_integrated
+        return I_integrated, popt

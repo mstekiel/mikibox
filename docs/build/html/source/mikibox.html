@@ -1,236 +1,175 @@
 
-<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
-    <title>Mikibox package &#8212; mikibox 0.1.0 documentation</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Mikibox package &#8212; mikibox 0.2.0 documentation</title>
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
-  <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
-  <link rel="stylesheet"
-    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
-
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    
-  <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
-
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="CrysFiPy under mikibox package" href="crysfipy.html" />
-    <link rel="prev" title="Welcome to mikibox’s documentation!" href="../index.html" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="None">
-    
-
-    <!-- Google Analytics -->
-    
-  </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
-    
-    <div class="container-fluid" id="banner"></div>
-
-    
-    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
-
-  <div id="navbar-start">
-    
-    
-<a class="navbar-brand" href="../index.html">
-<p class="title">mikibox</p>
-</a>
-
-    
-  </div>
-
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-
-  
-  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
-    <div id="navbar-center" class="mr-auto">
-      
-      <div class="navbar-center-item">
-        <ul id="navbar-main-elements" class="navbar-nav">
-    <li class="toctree-l1 current active nav-item">
- <a class="current reference internal nav-link" href="#">
-  Mikibox package
- </a>
-</li>
-
-<li class="toctree-l1 nav-item">
- <a class="reference internal nav-link" href="crysfipy.html">
-  CrysFiPy under mikibox package
- </a>
-</li>
-
-    
-</ul>
-      </div>
-      
-    </div>
-
-    <div id="navbar-end">
-      
-      <div class="navbar-end-item">
-        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+    <link rel="prev" title="Welcome to mikibox’s documentation!" href="../index.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="crysfipy.html" title="CrysFiPy under mikibox package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../index.html" title="Welcome to mikibox’s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">mikibox 0.2.0 documentation</a> &#187;</li> 
       </ul>
-      </div>
-      
-    </div>
-  </div>
-</div>
-    </nav>
-    
+    </div>  
 
-    <div class="container-xl">
-      <div class="row">
-          
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
             
-            <!-- Only show if we have sidebars configured, else just a small margin  -->
-            <div class="col-12 col-md-3 bd-sidebar">
-              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
-  <i class="icon fas fa-search"></i>
-  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
-</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
-  <div class="bd-toc-item active">
-    
-  </div>
-</nav>
-              </div>
-              <div class="sidebar-end-items">
-              </div>
-            </div>
-            
-          
-
-          
-          <div class="d-none d-xl-block col-xl-2 bd-toc">
-            
-              
-              <div class="toc-item">
-                
-
-<nav id="bd-toc-nav">
-    
-</nav>
-              </div>
-              
-              <div class="toc-item">
-                
-              </div>
-              
-            
-          </div>
-          
-
-          
-          
-            
-          
-          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
-              
-              <div>
-                
-  <section id="module-mikibox.functions">
-<span id="mikibox-package"></span><h1>Mikibox package<a class="headerlink" href="#module-mikibox.functions" title="Permalink to this headline">#</a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="mikibox.functions.angle">
-<span class="sig-prename descclassname"><span class="pre">mikibox.functions.</span></span><span class="sig-name descname"><span class="pre">angle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mikibox/functions.html#angle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mikibox.functions.angle" title="Permalink to this definition">#</a></dt>
+  <div class="section" id="module-mikibox.functions">
+<span id="mikibox-package"></span><h1>Mikibox package<a class="headerlink" href="#module-mikibox.functions" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="mikibox.functions.angle">
+<code class="descclassname">mikibox.functions.</code><code class="descname">angle</code><span class="sig-paren">(</span><em>v1</em>, <em>v2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mikibox/functions.html#angle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mikibox.functions.angle" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the angle between two vectors</p>
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="mikibox.functions.cartesian2spherical">
-<span class="sig-prename descclassname"><span class="pre">mikibox.functions.</span></span><span class="sig-name descname"><span class="pre">cartesian2spherical</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xyz</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mikibox/functions.html#cartesian2spherical"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mikibox.functions.cartesian2spherical" title="Permalink to this definition">#</a></dt>
+<dl class="function">
+<dt id="mikibox.functions.cartesian2spherical">
+<code class="descclassname">mikibox.functions.</code><code class="descname">cartesian2spherical</code><span class="sig-paren">(</span><em>xyz</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mikibox/functions.html#cartesian2spherical"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mikibox.functions.cartesian2spherical" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the spherical [r, theta, phi] coordinates of the cartesian vector [x,y,z]
 r &gt; 0
 theta in (0 : pi)
 phi in (-pi : pi)</p>
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="mikibox.functions.perp_matrix">
-<span class="sig-prename descclassname"><span class="pre">mikibox.functions.</span></span><span class="sig-name descname"><span class="pre">perp_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mikibox/functions.html#perp_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mikibox.functions.perp_matrix" title="Permalink to this definition">#</a></dt>
+<dl class="function">
+<dt id="mikibox.functions.gauss_bkg">
+<code class="descclassname">mikibox.functions.</code><code class="descname">gauss_bkg</code><span class="sig-paren">(</span><em>x</em>, <em>x0</em>, <em>A</em>, <em>sigma</em>, <em>bkg</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mikibox/functions.html#gauss_bkg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mikibox.functions.gauss_bkg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gaussian with constant background.</p>
+<p><span class="math notranslate nohighlight">\(f(x) = A exp(-(x-x_0)^2/(2 \sigma^2)) + bkg\)</span></p>
+<p>To convert to intensity of the peak <span class="math notranslate nohighlight">\(I = \sqrt{2 \pi} A \sigma\)</span></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="mikibox.functions.gauss_satellites_bkg">
+<code class="descclassname">mikibox.functions.</code><code class="descname">gauss_satellites_bkg</code><span class="sig-paren">(</span><em>x</em>, <em>x0</em>, <em>xs</em>, <em>As</em>, <em>sigmas</em>, <em>bkg</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mikibox/functions.html#gauss_satellites_bkg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mikibox.functions.gauss_satellites_bkg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gaussian with constant background.</p>
+<p><span class="math notranslate nohighlight">\(f(x) = A exp(-(x-x_0)^2/(2 \sigma^2)) + bkg\)</span></p>
+<p>To convert to intensity of the peak <span class="math notranslate nohighlight">\(I = \sqrt{2 \pi} A \sigma\)</span></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="mikibox.functions.lorentz_bkg">
+<code class="descclassname">mikibox.functions.</code><code class="descname">lorentz_bkg</code><span class="sig-paren">(</span><em>x</em>, <em>x0</em>, <em>A</em>, <em>gamma</em>, <em>bkg</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mikibox/functions.html#lorentz_bkg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mikibox.functions.lorentz_bkg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gaussian with constant background.</p>
+<p><span class="math notranslate nohighlight">\(f(x) = \frac{A}{(1+(x-x_0)^2/\gamma^2))} + bkg\)</span></p>
+<p>To convert to intensity of the peak <span class="math notranslate nohighlight">\(I = \pi A \gamma\)</span></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="mikibox.functions.perp_matrix">
+<code class="descclassname">mikibox.functions.</code><code class="descname">perp_matrix</code><span class="sig-paren">(</span><em>q</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mikibox/functions.html#perp_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mikibox.functions.perp_matrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the matrix representing projection on the plane perpendicular to the given vector q</p>
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="mikibox.functions.perp_part">
-<span class="sig-prename descclassname"><span class="pre">mikibox.functions.</span></span><span class="sig-name descname"><span class="pre">perp_part</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">m</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mikibox/functions.html#perp_part"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mikibox.functions.perp_part" title="Permalink to this definition">#</a></dt>
+<dl class="function">
+<dt id="mikibox.functions.perp_part">
+<code class="descclassname">mikibox.functions.</code><code class="descname">perp_part</code><span class="sig-paren">(</span><em>m</em>, <em>q</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mikibox/functions.html#perp_part"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mikibox.functions.perp_part" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the part of vector m that is perpendicular to the vector q</p>
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="mikibox.functions.rotate">
-<span class="sig-prename descclassname"><span class="pre">mikibox.functions.</span></span><span class="sig-name descname"><span class="pre">rotate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mikibox/functions.html#rotate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mikibox.functions.rotate" title="Permalink to this definition">#</a></dt>
+<dl class="function">
+<dt id="mikibox.functions.pseudoVoigt_bkg">
+<code class="descclassname">mikibox.functions.</code><code class="descname">pseudoVoigt_bkg</code><span class="sig-paren">(</span><em>x</em>, <em>x0</em>, <em>I</em>, <em>f</em>, <em>eta</em>, <em>bkg</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mikibox/functions.html#pseudoVoigt_bkg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mikibox.functions.pseudoVoigt_bkg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pseudo-Voigt function.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="mikibox.functions.rotate">
+<code class="descclassname">mikibox.functions.</code><code class="descname">rotate</code><span class="sig-paren">(</span><em>n</em>, <em>angle</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mikibox/functions.html#rotate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mikibox.functions.rotate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a matrix representing the rotation around vector {n} by {angle} radians.
 Length of the {n} vector does not matter.</p>
 </dd></dl>
 
-</section>
-
-
-              </div>
-              
-              
-              <!-- Previous / next buttons -->
-<div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="../index.html" title="previous page">
-        <i class="fas fa-angle-left"></i>
-        <div class="prev-next-info">
-            <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Welcome to mikibox’s documentation!</p>
-        </div>
-    </a>
-    <a class='right-next' id="next-link" href="crysfipy.html" title="next page">
-    <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">CrysFiPy under mikibox package</p>
-    </div>
-    <i class="fas fa-angle-right"></i>
-    </a>
 </div>
-              
-          </main>
-          
 
+
+          </div>
+        </div>
       </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../index.html"
+                        title="previous chapter">Welcome to mikibox’s documentation!</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="crysfipy.html"
+                        title="next chapter">CrysFiPy under mikibox package</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/source/mikibox.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
     </div>
-  
-  <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
-<footer class="footer mt-5 mt-md-0">
-  <div class="container">
-    
-    <div class="footer-item">
-      <p class="copyright">
-    &copy; Copyright 2022, Michal Stekiel.<br>
-</p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
     </div>
-    
-    <div class="footer-item">
-      <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
-</p>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="crysfipy.html" title="CrysFiPy under mikibox package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../index.html" title="Welcome to mikibox’s documentation!"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">mikibox 0.2.0 documentation</a> &#187;</li> 
+      </ul>
     </div>
-    
-  </div>
-</footer>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2022, Michal Stekiel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+    </div>
   </body>
 </html>

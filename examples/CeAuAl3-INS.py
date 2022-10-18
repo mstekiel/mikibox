@@ -1,11 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import yaml
 
 from timeit import default_timer as timer
 
 import sys
-sys.path.append('C:/Users/Michal/Documents/GitHub/mikibox')
+sys.path.append('C:/Users/Stekiel/Documents/GitHub/mikibox')
 import mikibox as ms
 
 
@@ -60,9 +59,9 @@ if calculateTOF:
     
     Is = [[] for n in range(len(selectedEnergies))]
 
-    N = 44
+    N = 100
     hs = np.linspace(-1,1,N)*5
-    ls = np.linspace(-1,1,N)*10
+    ls = np.linspace(-1,1,N)*8
     
     Qs = lattice.hkl2k([[h,0,l] for h in hs for l in ls])
 
@@ -72,10 +71,10 @@ if calculateTOF:
         for it,selectedEnergy in enumerate(selectedEnergies):
             selectedTransitions = np.where(np.abs(De-selectedEnergy)<1e-5)
             Is[it].append(np.sum(Dint[selectedTransitions]))
-                
+               
     
     for it in range(len(selectedEnergies)):
-        I = np.reshape(Is[it],(N,N))
+        I = np.reshape(Is[it],(N,N)).T
         X, Y = np.meshgrid(hs,ls)
         
         ax[it].set_xlabel('H')

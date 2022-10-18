@@ -11,53 +11,59 @@ class PSI_ZEBRA(Beamline):
     '''
     
     def __init__(self):
-        self.omega_sense = -1
-        self.omega_offset = -90
+        # These offsets and senses are supposed to be universal. I wonder if they will be consistent among different beamtimes and sample environments.
+        self._omega_sense = -1
+        self._omega_offset = -90
         
-        self.gamma_sense = -1
-        self.gamma_offset = 0
+        self._gamma_sense = -1
+        self._gamma_offset = 0
         
-        self.nu_sense = 1
-        self.nu_offset = 0
+        self._nu_sense = 1
+        self._nu_offset = 0
     
-    def integrate_dataset(self, DATA, normalize=True, scale=100):
+    def integrate_dataset(self, DATA, normalize=True, scale=100, dir_cosines=False, silent=False):
         '''
         Integrate the dataset.
         
         Return
-            List containing entries as in the hkl file format
+            List containing entries as in the hkl file format and fit parameters
         '''
+                   
         list_hkl = []
         for DATA_block in DATA:
             h,k,l = [DATA_block[key] for key in 'hkl']
-            II = self.fit_integrate(DATA_block['x'], DATA_block['counts'])
+            II, pfit = self.fit_integrate(DATA_block['x'], DATA_block['counts'], silent)
             dII = np.sqrt(II)
             
             # Normalize to monitor
             if normalize:
                 II = scale*II/DATA_block['monitor']
                 dII = scale*dII/DATA_block['monitor']
-                
-            list_hkl.append([h,k,l,II,dII])
+                                
+            if dir_cosines:
+                # Add direction cosines to the output
+                pass
+
+            output = [h,k,l,II,dII, pfit]
+
+            list_hkl.append(output)
             
-        return list_khl
+        return list_hkl
         
-    def get_refl(self, DATA,hkl):
+        
+    def get_refl(self, DATA, hkl):
         '''
         Get the datablock corresponding to the reflection
         '''
         h,k,l= hkl
+        datablock = None
         
         refl_id=-1
-        for it,DATAblock in enumerate(DATA):
+        for DATAblock in DATA:
             if DATAblock['h']==h and DATAblock['k']==k and DATAblock['l']==l:
-                refl_id = it
-                
-        if refl_id==-1:
-            raise Warning(f'Reflection {hkl} not found in the dataset')
-            return None
+                datablock = DATAblock
             
-        return DATA[refl_id]
+        return datablock     
         
     def load_ccl(self, filename, **kwargs):
         '''
@@ -158,14 +164,14 @@ class PSI_ZEBRA(Beamline):
         data_end = -1    
             
         for it,line in enumerate(lines):
-            line_records = line.split()
+            line_records = line.replace('=',' = ').split()
             if len(line_records)>1 and line_records[1]=='=':
                 it = line.find('=')
                 
                 try:
                     value = float(line[it+2:])
                 except ValueError:
-                    value = line[it+2:]
+                    value = line[it+1:].strip()
                     
                 HEADER[line_records[0]] = value
                 
@@ -193,7 +199,7 @@ class PSI_ZEBRA(Beamline):
         DATA = np.array(DATA_str, dtype=float)
 
                 
-        return DATA, HEADER
+        return HEADER, DATA
         
     def load(self,filename, extension=None):
         '''
@@ -211,13 +217,13 @@ class PSI_ZEBRA(Beamline):
 
                 
         if extension == 'ccl':
-            DATA, HEADER = load_ccl(filename)
+            HEADER, DATA = self.load_ccl(filename)
         elif extension == 'dat':
-            DATA, HEADER = load_dat(filename)
+            HEADER, DATA = self.load_dat(filename)
         else:
             raise ValueError('Unknown extension of the file')   
             
-        return DATA, HEADER
+        return HEADER, DATA
         
     def convert_CCL2NICOS(self, filename, **kwargs):
         '''

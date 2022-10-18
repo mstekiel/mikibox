@@ -14,10 +14,11 @@ R0 = _r0*_gn/2  #strenght of dipolar neutron electron interaction
 uB_SI = 9.27400968 * 1e-24          # J/T
 kB_SI = 1.38064880 * 1e-23          # J/K
 NA    = 6.02214129 * 1e+23          # 1 / mol
-eV2K    = 11.6
-uB = uB_SI/kB_SI                    # uB ... 0.67171
+meV2K    = 11.60452
+uB = 1e3*uB_SI/_e                    # uB in meV/T
 
 invcm2meV = 100*1000*_h*_c/_e
+K2meV = 0.086173
 
 # conversion from [mol/m3] to intern [T/uB]
 

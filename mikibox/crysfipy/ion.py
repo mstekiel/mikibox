@@ -81,9 +81,13 @@ class Ion:
     def __str__(self):
         return "%s: J = %d, gJ = %.2f" % (self.name.title(), self.J, self.gJ)
         
-    def _LandeGFactor(S,L):
+    def _LandeGFactor(self,S,L):
         # Maybe for the future implementation, when the initialization will be done with S and L not with J
         return 1.5 + (S*(S+1) - L*(L+1))/(2*J*(J+1))
+        
+    def _m_in_vacuum(self):
+        # Calculate magnetic moment of an isolated ion in the units of Bohr magnetons.
+        return self.gJ*np.sqrt(self.J*(self.J+1))
         
     def mff(self,Q):
         '''

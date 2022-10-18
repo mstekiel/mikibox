@@ -1,5 +1,6 @@
 from . import constants as C
 from .cefmatrices import *
+from .cefion import CEFion
 
 import numpy as np
 from numpy import conj, transpose, dot, diag  
@@ -9,11 +10,11 @@ def boltzman_population(energies, temperature):
     '''
     Calculate the population of energy levels at given temperature based on the Boltzmann statistic.
     
-    :math:`n_i = \\frac{1}{Z} e^{-E_i/k_B T}`
+    :math:`p_i = \\frac{1}{Z} e^{-E_i/k_B T}`
     
     :math:`Z = \\sum_i e^{-Ei/k_BT}`
     
-    One important distinction, is that this function works with eigenvalues (energies) of eigenvectors from the whole Hilbert space, as it needs to evaluate :math:`Z` on its own. This works well for the total angular momentum Hilbert space, and does care about degeneracies.
+    One important distinction, is that this function works with eigenvalues (energies) from the whole Hilbert space, as it needs to evaluate :math:`Z` on its own. This works well for the total angular momentum Hilbert space, and does care about degeneracies.
     
     Parameters:
         energies : array_like
@@ -25,7 +26,7 @@ def boltzman_population(energies, temperature):
         List of occupation probabilities for each energy level.
     '''
     
-    p = np.exp(-energies*C.eV2K/temperature)
+    p = np.exp(-energies*C.meV2K/temperature)
     Z = sum(p)
     return p / Z
 
@@ -51,7 +52,7 @@ def _rawneutronint(E, J2_perp, gJ, T):
     
     return trans_int
 
-def neutronint(cefion, T, Q = 'powder', Ei=1e+6):
+def neutronint(cefion, T, Q, scheme, Ei=1e+6):
     """
     Returns matrix of energies and inelastic neutron scattering spectral weights for all possible transitions at given temperature. The spectral weight is calculated by equation from Enderle book following Stephane Raymond article.
     
@@ -72,11 +73,14 @@ def neutronint(cefion, T, Q = 'powder', Ei=1e+6):
             Rare-earth ion in the crystal field
         T : float
             Temperature in *K*
-        Q : 'powder' or ndarray, optional
+        Q : ndarray
+            List of Q vectors used to evaluate the spectral weight
+        
+        scheme : 'powder', 'single-crystal':
             Scheme according to which :math:`|J_\perp|^2` is calculated.
             
             * powder :  :math:`|<\\lambda_f|J_\\perp|\\lambda_i>|^2 = 2/3\\sum_\\alpha |<\\lambda_f|J_\\alpha|\\lambda_i>|^2` (default).
-            * (3,) float : :math:`|<\\lambda_f|J_\\perp|\\lambda_i>|^2 = \\sum_\\alpha (1-\\frac{Q_\\alpha}{Q})|<\\lambda_f|J_\\alpha|\\lambda_i>|^2`. Q is a vector representing a direction in the reciprocal space in respect to which a perpendicular projection of :math:`J` will be calculated.
+            * (single-crystal : :math:`|<\\lambda_f|J_\\perp|\\lambda_i>|^2 = \\sum_\\alpha (1-\\frac{Q_\\alpha}{Q})|<\\lambda_f|J_\\alpha|\\lambda_i>|^2`. Q is a vector representing a direction in the reciprocal space in respect to which a perpendicular projection of :math:`J` will be calculated.
 
             
     Returns:
@@ -101,11 +105,10 @@ def neutronint(cefion, T, Q = 'powder', Ei=1e+6):
     eDW = 1
     
     # Tricky way to create a 2D array of energies associated with transitions between levels
-    jumps = cefion.energies - cefion.energies[np.newaxis].T
-    
+    jumps = cefion.energies - cefion.energies[np.newaxis].T    
     
     # Calculate the |<\Gamma_f|J_\perp|\Gamma_i>|^2 matrix
-    if type(Q) in [list, np.ndarray]:
+    if scheme=='single-crystal':
         Q = np.array(Q).flatten()
         if Q.shape[0] != 3:
             raise ValueError('Dimension of the``Q`` vector is not 3')
@@ -120,7 +123,7 @@ def neutronint(cefion, T, Q = 'powder', Ei=1e+6):
         
         J2_perp = np.einsum('i,ijk',projection, J2)
         
-    elif Q=='powder':
+    elif scheme=='powder':
         J2_perp = 2.0 / 3 * np.einsum('ijk->jk',np.square(np.abs(cefion.J)))    
         
     else:
@@ -131,10 +134,10 @@ def neutronint(cefion, T, Q = 'powder', Ei=1e+6):
     kfki = np.sqrt(1-jumps/Ei)
     
     # Occupation
-    prst = boltzman_population(cefion.energies, T)
+    transition_probs = boltzman_population(cefion.energies, T)
         
     # Multiply the factors, vectors and matrices properly to get spectral weight.
-    Sqw = f2m * eDW * kfki * J2_perp * prst[:, np.newaxis]
+    Sqw = f2m * eDW * kfki * J2_perp * transition_probs[:, np.newaxis]
     
     Denergies = jumps.flatten()
     sorting = Denergies.argsort()
@@ -142,8 +145,8 @@ def neutronint(cefion, T, Q = 'powder', Ei=1e+6):
 
 def magnetization(cefion, T, Hfield):
     '''
-    Calculate the magnetization of the single ion in the crystal field.
-    :math:`M_\\alpha = g_J \\sum_n p_n <\\lambda_n | \hat{J}_\\alpha | \\lambda_n>`
+    Calculate the magnetization of the single ion in the crystal field. Returned value is in :math:`\\mu_B` units.
+    :math:`M_\\alpha = g_J \\sum_n p_n |<\\lambda_n | \hat{J}_\\alpha | \\lambda_n>|`
     
     '''
     
@@ -151,7 +154,7 @@ def magnetization(cefion, T, Hfield):
     
     # The diagonalized Hamiltonians' operators are already transformed into the sorted eigenvector base
     p = boltzman_population(cefion_inH.energies, T)
-    M = cefion_inH.ion.gJ * np.real( np.einsum('ijj,j',cefion_inH.J,p) )  
+    M = cefion_inH.ion.gJ * np.abs( np.einsum('ijj,j',cefion_inH.J,p) )
     
     return M
 
@@ -165,38 +168,69 @@ def _rawsusceptibility(energy, moment, H_direction, H_size, T):
     overal_moment = dot(prst, moment);
     return dot(overal_moment, H_direction.conj().transpose()) / H_size
 
-def susceptibility(cefion, T, Hfield_direction, method):
+def susceptibility(cefion, temperatures, Hfield_direction, method='perturbation'):
     """
     Calculate the magnetic susceptibility at given temperature.
     
-    The susceptibility is calculated as a numerical derivative of the magnetization. But it seems there are some other smart methods to calculate it, so take a look into these japanese papers.
+    The susceptibility is calculated from the perturbation of the Hamiltonian.
+    
+    | :math:`\\chi_{CEF} = (g_J \\mu_B)^2 \\left[ \\sum_{n,m \\neq n}  p_n \\frac{1-exp(-\\Delta_{m,n}/k_B T)}{\\Delta_{m,n}} |<\\lambda_m|J|\\lambda_n>|^2  +  \\frac{1}{k_B T} \\sum_{n} p_n |<\\lambda_n|J|\\lambda_n>|^2 \\right]`
+    | :math:`g_J \\mu_B` : Lande factor, Bohr magneton.
+    | :math:`p_n` : Ptobabitlity of occupying the energy level :math:`\\lambda_n` at given temperature.
+    | :math:`\\Delta_{m,n}` : Energy of transition between the :math:`\\lambda_n` and :math:`\\lambda_m` levels.
+    | :math:`<\\lambda_m|J|\\lambda_n>` : J matrix elements.
+
+    In calculations a dangerous trick is used. The :math:`\\frac{1-exp(-\\Delta_{m,n}/k_B T)}{\\Delta_{m,n}}` 
+    factor is computed as a matrix, so naturally it will be divergent on the diagonal, since :math:`\\Delta_{m,n}=0` there. 
+    This raises a RuntimeWarning which is ignored , and the diagonal is replaced with the :math:`1/k_B T` values, and the two summations are bundled together. 
+    This feels dirty, but works so far, even for spin-half systems, which have degenerated ebergy levels.
+    Maybe because the transitions between degenerated levels are not exactly 0 in the calculations (1e-15 rather).
+
     
     Parameters:
-        ion : :obj:`crysfipy.reion.CEFion`
+        cefion : :obj:`crysfipy.cefion.CEFion`
             Rare-earth ion in crystal field\
-        T : float
-            Temperature
+        temperatures : ndarray
+            Array ocntaining temperatures at which to compute the susceptibility.
         Hfield_direction:
-            Direction of the applied magnetic field.
+            Direction of the applied magnetic field. Value can be arbitrary, it is normalized in the code.
+        method: optional, 'perturbation', 'magnetization'
+            Method by which to calculate susceptibility. Old implementation 
             
     Returns:
-        List of susceptibility values calculated at given temperatures
+        List of susceptibility values calculated at given temperatures. In the units of :math:`\\mu_B^2`.
     """
+    
 
-    # TODO complete rework
-    # Next liens are taken from the previous version od the code
-    # self.moment[:,0] = - self.ion.gJ * np.real(diag(self.Jx))
-    # self.moment[:,1] = - self.ion.gJ * np.real(diag(self.Jy))                      
-    # self.moment[:,2] = - self.ion.gJ * np.real(diag(self.Jz))
 
     if method=='magnetization':
-        susceptibility = np.zeros(len(T))
+        susceptibility = np.zeros(len(temperatures))
         eps = 1e-8
         
-        for it, temperature in enumerate(T):
+        for it, temperature in enumerate(temperatures):
             Hfield = eps * np.array(Hfield_direction)/np.linalg.norm(Hfield_direction)
             M = magnetization(cefion, temperature, Hfield)
             susceptibility[it] = np.linalg.norm(M)/eps
+    elif method=='perturbation':
+        susceptibility = np.empty(len(temperatures))
+        #susceptibility.fill(np.nan)
+
+        for it, temperature in enumerate(temperatures):
+            # Tricky way to create a 2D array of energies associated with transitions between levels
+            jumps = cefion.energies - cefion.energies[np.newaxis].T
+            
+            
+            Tmx = (1 - np.exp(-jumps*C.meV2K/temperature))/jumps
+            np.fill_diagonal(Tmx, 1*C.meV2K/temperature)
+            transition_probs = boltzman_population(cefion.energies, temperature)
+            Tmx = Tmx * transition_probs[:, np.newaxis]
+
+
+            
+            J2 = np.square(np.abs(cefion.J))
+            J2_directed = np.einsum('i,ijk',Hfield_direction, J2)/np.linalg.norm(Hfield_direction)
+            
+            susceptibility[it] = (cefion.ion.gJ)**2 * np.sum(Tmx * J2_directed)
     else:
         raise ValueError('Unknown method to calculate magnetization.')
         
@@ -207,7 +241,7 @@ def thermodynamics(cefion, T):
     """
     Calculate the fundamental thermodynamic values as a function of temperature.
     
-    This is all calculated together taking advantage of the fact that all thermodynamics can be determined from the partition function :math:`Z`, upon differentiation on :math:`\\beta`, where :math:`\\beta = \\frac{1}{k_B T}`.
+    These functions are calculated alltogether taking advantage of the fact that thermodynamics can be determined from the partition function :math:`Z`, upon differentiation on :math:`\\beta`, where :math:`\\beta = \\frac{1}{k_B T}`.
     
     | Partition function: :math:`Z = \\sum_n e^{-\\beta E_n}`
     | Average energy: :math:`\\langle E \\rangle = - \\frac{\\partial Z}{\\partial \\beta}`
@@ -225,7 +259,7 @@ def thermodynamics(cefion, T):
         Z, E, S CV : The partition function, average energy (internal energy), entropy and heat capacity, respectively.
     """
     Z = np.zeros(len(T))
-    beta = C.eV2K/T
+    beta = C.meV2K/T
     
     for En in cefion.energies:
         Z += np.exp(-En*beta)

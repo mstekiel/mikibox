@@ -87,8 +87,8 @@ def angle(v1,v2):
     '''
     Return the angle between two vectors
     '''
-    
-    return np.arccos(np.dot(v1,v2)/norm(v1)/norm(v2))
+    # Clip is required to deal with floating points.
+    return np.arccos( np.clip( np.dot(v1,v2)/norm(v1)/norm(v2), 0,1) )
 
 def perp_matrix(q):
     '''

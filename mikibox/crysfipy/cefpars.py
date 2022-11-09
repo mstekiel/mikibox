@@ -3,7 +3,7 @@ import numpy as np
 from . import constants as C
 
 class CEFpars:
-    """
+    r"""
     Class representing set of crystal field parameters.
 
     It simplifies the creation of the CF parameter sets considering the point group of the ion.

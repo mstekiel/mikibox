@@ -10,7 +10,7 @@ class Lattice:
     
     The crystallographic conventions should be cleared out.
     
-    The main idea is that the orientation can be change, but the lattice type and parameters no.
+    The main idea is that the orientation can be changed, but the lattice type and parameters no.
     
     Attirbutes:
         lattice_parameters: ndarray((6))
@@ -151,7 +151,7 @@ class Lattice:
             np.testing.assert_almost_equal(np.dot(newU[1],newU[1]), 1)
             np.testing.assert_almost_equal(np.dot(newU[2],newU[2]), 1)
         except AssertionError:
-            raise Warning('The new orientation matrix does not seem to be normal')
+            raise Warning('The new orientation matrix does not seem to be row-normalized')
             
         try:
             np.testing.assert_almost_equal(np.dot(newU[0],newU[1]), 0)

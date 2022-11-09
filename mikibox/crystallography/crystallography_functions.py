@@ -23,3 +23,12 @@ def lattice_pars_from_UB(UB):
     gam = np.degrees(np.arccos(np.dot(a1,a2)/(a*b)))
 
     return (a,b,c, alp,bet,gam)
+
+def load_HKL_file(filename: str) -> np.ndarray:
+    '''
+    Load an *.hkl file containing reflections intensities and intensities errors.
+    '''
+
+    data = np.loadtxt(filename)
+
+    return data

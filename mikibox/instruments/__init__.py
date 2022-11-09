@@ -4,5 +4,7 @@
 
 __version__ = '1.0.0_TUM'
 
+from .beamline import Beamline
+
 from .ILL_D23 import ILL_D23
 from .PSI_ZEBRA import PSI_ZEBRA

@@ -1,8 +1,8 @@
 import numpy as np
 import time as tt
 
-from .Beamline import Beamline
-from ..crystallography import *
+from . import Beamline
+import mikibox.crystallography as mscryst
 
 class PSI_ZEBRA(Beamline):
     '''
@@ -255,7 +255,7 @@ class PSI_ZEBRA(Beamline):
             UB = HEADER['UB'].replace('(','').replace(')','').replace(',','')
             UB = np.reshape(np.array(UB.split(),dtype=float), (3,3))
                     
-            lengths, angles = lattice_pars_from_UB(UB)
+            lengths, angles = mscryst.lattice_pars_from_UB(UB)
             outlines.append('#%26s : %s A' % ('lattice (a,b,c))', lengths))
             outlines.append('#%26s : %s deg' % ('lattice (alp,bet,gam))', angles))
 

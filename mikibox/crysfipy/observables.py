@@ -7,7 +7,7 @@ from numpy import conj, transpose, dot, diag
     
 
 def boltzman_population(energies, temperature):
-    '''
+    r'''
     Calculate the population of energy levels at given temperature based on the Boltzmann statistic.
     
     :math:`p_i = \\frac{1}{Z} e^{-E_i/k_B T}`
@@ -53,7 +53,7 @@ def _rawneutronint(E, J2_perp, gJ, T):
     return trans_int
 
 def neutronint(cefion, T, Q, scheme, Ei=1e+6):
-    """
+    r"""
     Returns matrix of energies and inelastic neutron scattering spectral weights for all possible transitions at given temperature. The spectral weight is calculated by equation from Enderle book following Stephane Raymond article.
     
     | :math:`S(\\vec{Q},\\omega) = N (\\gamma r_0)^2 f^2_m(Q) e^{-2W(Q)} \\sum_{if} \\frac{k_f}{k_i} p_i |<\\lambda_f|J_\perp|\\lambda_i>|^2 \\delta(E_i - E_f - \\hbar \\omega)`
@@ -144,7 +144,7 @@ def neutronint(cefion, T, Q, scheme, Ei=1e+6):
     return (Denergies[sorting], Sqw.flatten()[sorting])
 
 def magnetization(cefion, T, Hfield):
-    '''
+    r'''
     Calculate the magnetization of the single ion in the crystal field. Returned value is in :math:`\\mu_B` units.
     :math:`M_\\alpha = g_J \\sum_n p_n |<\\lambda_n | \hat{J}_\\alpha | \\lambda_n>|`
     
@@ -169,7 +169,7 @@ def _rawsusceptibility(energy, moment, H_direction, H_size, T):
     return dot(overal_moment, H_direction.conj().transpose()) / H_size
 
 def susceptibility(cefion, temperatures, Hfield_direction, method='perturbation'):
-    """
+    r"""
     Calculate the magnetic susceptibility at given temperature.
     
     The susceptibility is calculated from the perturbation of the Hamiltonian.
@@ -238,7 +238,7 @@ def susceptibility(cefion, temperatures, Hfield_direction, method='perturbation'
         
         
 def thermodynamics(cefion, T):
-    """
+    r"""
     Calculate the fundamental thermodynamic values as a function of temperature.
     
     These functions are calculated alltogether taking advantage of the fact that thermodynamics can be determined from the partition function :math:`Z`, upon differentiation on :math:`\\beta`, where :math:`\\beta = \\frac{1}{k_B T}`.

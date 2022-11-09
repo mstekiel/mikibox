@@ -2,7 +2,7 @@ import unittest
 import numpy as np
 import mikibox as ms
 import mikibox.crysfipy as cfp
-import mikibox.crysfipy.const as C
+import mikibox.crysfipy.constants as C
 
 class CrysFiPyTest(unittest.TestCase):
     # Set up the test case with the tolerances for vectors tests
@@ -45,12 +45,11 @@ class CrysFiPyTest(unittest.TestCase):
         # Cermak et al., PNAS, April 2, 2019, vol. 116, no. 14, 6695–6700
         # Magnetoelastic hybrid excitations in CeAuAl3
         # www.pnas.org/cgi/doi/10.1073/pnas.1819664116
-        ce = cfp.re("Ce", [0,0,0], ["t", 1.203, -0.001, 0.244])
-        ce.getlevels()
+        ce = cfp.CEFion("Ce", [0,0,0], cfp.CEFpars('C4h', [1.203, -0.001, 0.244], 'meV'))
 
         # Compare energies
         # All levels are two-fold degenerated, with excitation energies 2.96 meV and 24.27 meV
-        np.testing.assert_allclose(ce.energy, [ 0.,0.,4.96,4.96,24.27,24.27], rtol=1e-2, atol=1e-2)
+        np.testing.assert_allclose(ce.energies, [ 0.,0.,4.96,4.96,24.27,24.27], rtol=1e-2, atol=1e-2)
         
         # Compare wavefunctions
         # ground state:     |+-1/2>
@@ -65,18 +64,18 @@ class CrysFiPyTest(unittest.TestCase):
         
         # Ground state
         allowed_evs = [[0,0,1,0,0,0], [0,0,0,1,0,0]]
-        self.assert_eigenvectors(ce.ev[:,0], allowed_evs, self.rtol, self.atol)
-        self.assert_eigenvectors(ce.ev[:,1], allowed_evs, self.rtol, self.atol)
+        self.assert_eigenvectors(ce.eigenvectors[:,0], allowed_evs, self.rtol, self.atol)
+        self.assert_eigenvectors(ce.eigenvectors[:,1], allowed_evs, self.rtol, self.atol)
         
         # First excited state, requires multiplying by -1 phase factor
         allowed_evs = [[-beta,0,0,0,alpha,0], [0,alpha,0,0,0,-beta]]
-        self.assert_eigenvectors(ce.ev[:,2], allowed_evs, rtol, atol)
-        self.assert_eigenvectors(ce.ev[:,3], allowed_evs, rtol, atol)
+        self.assert_eigenvectors(ce.eigenvectors[:,2], allowed_evs, rtol, atol)
+        self.assert_eigenvectors(ce.eigenvectors[:,3], allowed_evs, rtol, atol)
         
         # Second excited state
         allowed_evs = [[0,beta,0,0,0,alpha], [alpha,0,0,0,beta,0]]
-        self.assert_eigenvectors(ce.ev[:,4], allowed_evs, rtol, atol)
-        self.assert_eigenvectors(ce.ev[:,5], allowed_evs, rtol, atol)
+        self.assert_eigenvectors(ce.eigenvectors[:,4], allowed_evs, rtol, atol)
+        self.assert_eigenvectors(ce.eigenvectors[:,5], allowed_evs, rtol, atol)
         
     def test_Tb3inY3Al5O12(self):
         # Heavy lifting
@@ -87,9 +86,8 @@ class CrysFiPyTest(unittest.TestCase):
         # Doesnt work
         
         # The final set of parameters involves
-        energies = np.array([461,165,-169,-1720,-900,-1324,-621,599,-561])*C.invcm2meV
-        tb = cfp.re("Tb", [0,0,0], ["o", energies ])
-        tb.getlevels()
+        cefpars = np.array([461,165,-169,-1720,-900,-1324,-621,599,-561])*C.invcm2meV
+        tb = cfp.CEFion("Tb", [0,0,0], cfp.CEFpars('C2v', cefpars, 'meV'))
         
         print(tb.hamiltonian)
 

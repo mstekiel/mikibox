@@ -50,16 +50,19 @@ def rotate(n, angle):
     return np.matmul(Rz(phi), np.matmul(Ry(theta), np.matmul(Rz(angle), np.matmul(Ry(-theta), Rz(-phi) ))))
     
 def Rx(alpha):
+    '''Matrix of right-handed rotation around x-axis [1,0,0] by angle alpha in radians.'''
     sa = np.sin(alpha)
     ca = np.cos(alpha)
     return np.array([[1,0,0],[0,ca,-sa],[0,sa,ca]])
     
 def Ry(alpha):
+    '''Matrix of right-handed rotation around y-axis [0,1,0] by angle alpha in radians.'''
     sa = np.sin(alpha)
     ca = np.cos(alpha)
     return np.array([[ca,0,sa],[0,1,0],[-sa,0,ca]])
 
-def Rz(alpha):
+def Rz(alpha: float) -> np.ndarray:
+    '''Matrix of right-handed rotation around z-axis [0,0,1] by angle alpha in radians.'''
     sa = np.sin(alpha)
     ca = np.cos(alpha)
     return np.array([[ca,-sa,0],[sa,ca,0],[0,0,1]])

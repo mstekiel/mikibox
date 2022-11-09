@@ -1,11 +1,11 @@
 import numpy as np
 from scipy.optimize import curve_fit
 from scipy import integrate
-from ..functions import pseudoVoigt_bkg, gauss_bkg
+from mikibox.functions import pseudoVoigt_bkg, gauss_bkg
 
 class Beamline():
     '''
-    Class representing a beamline.
+    Class representing a beamline at a large scale facility.
     
     It's main purpose is to store the rotation conventions and offsets and avoid retyping.
     Currently implemented things are:

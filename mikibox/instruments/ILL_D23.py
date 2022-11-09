@@ -3,7 +3,7 @@ import time as tt
 from scipy.optimize import curve_fit
 from collections import OrderedDict
 
-from .Beamline import Beamline
+from . import Beamline
 
 class ILL_D23(Beamline):
     '''
@@ -30,7 +30,7 @@ class ILL_D23(Beamline):
             1. omega from D23 needs +90 offset to match conventions of Davinci
             2. A list of header names is appended to be readable by Davinci
             3. There is a warning implemented, that triggers when the incoming or scattered beam might be obstructed by soft pipes.
-               They can reduced the beam by 33%. This warrning should be tested.
+               They can reduced the beam by 33%. This warning should be tested.
         '''
         
         outlines = []

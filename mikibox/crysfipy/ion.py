@@ -2,7 +2,7 @@ import numpy as np
 from pprint import pprint
 
 class Ion:
-    """
+    r"""
     Class representing an isolated rare-earth ion and its fundamental parameters.
     
     Attributes:
@@ -22,8 +22,8 @@ class Ion:
             Dictionary of coefficients, used to calculate the magnetic form factor
     """
 
-    def __init__(self, ionstr):
-        self.name = ionstr.lower()
+    def __init__(self, ion_name):
+        self.name = ion_name.lower()
 
         atomicDatabase = {
         "ce": {"J":2.5, "gJ":0.8571428571428571,

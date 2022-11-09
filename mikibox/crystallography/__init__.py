@@ -5,6 +5,8 @@
 
 __version__ = '1.0'
 
+# NEXT VERSION: update after the AbsorptionCorrection problem is implemented with central and grid methods
+
 # Import main classes
 from .lattice import Lattice
 from .absorption_correction import AbsorptionCorrection

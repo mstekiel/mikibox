@@ -1,7 +1,7 @@
 # from .. import functions as ms
 
 from . import constants as C
-from .cefpars import CEFpars
+from . import CEFpars, Ion
 from .cefmatrices import *
 
 import numpy as np
@@ -10,7 +10,7 @@ import numpy as np
 
 
 class CEFion:
-    """
+    r'''
     Object representing a rare-earth ion in CF potential. It is internally calculated in the meV units.
     
     Parameters:
@@ -25,8 +25,9 @@ class CEFion:
 
     Examples:
         
-        >>> ce = CEFion("Ce", [0,0,0], ["c", 10])
-        >>> print(ce)
+        TODO
+        ce = CEFion("Ce", [0,0,0], ["T", 10])
+        print(ce)
         Energy levels:
         E(0) =	0.0000	 2fold-degenerated
         E(1) =	3600.0000	 4fold-degenerated
@@ -54,12 +55,12 @@ class CEFion:
             List containing entries like [energy, degeneracy], which describes how degenerated is the given energy level.
         freeionkets : list
             List of kets corresponding to the J basis of the free ion problem.
-    """
+    '''
 
-    def __init__(self, ion, Hfield, cfp, diagonalize = True):
-        self.ion = ion
-        self.Jval = ion.J
-        Jval = ion.J
+    def __init__(self, ion_name: str, Hfield: tuple, cfp: CEFpars, diagonalize: bool=True):
+        self.ion = Ion(ion_name)
+        self.Jval = self.ion.J
+        Jval = self.Jval
         
         # TODO check if the Hfield parameter is appropriate
         self.Hfield = np.array(Hfield)

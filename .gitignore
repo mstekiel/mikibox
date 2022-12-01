@@ -1,0 +1,8 @@
+# general things to ignore
+__pycache__/
+.vscode
+*.egg-info/
+*.egg
+*.py[cod]
+
+# due to using other things

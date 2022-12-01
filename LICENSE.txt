@@ -1,0 +1,3 @@
+Learn about licenses and figure out which one should be best.
+
+Something fully open.

@@ -57,8 +57,8 @@ class CEFion:
             List of kets corresponding to the J basis of the free ion problem.
     '''
 
-    def __init__(self, ion_name: str, Hfield: tuple, cfp: CEFpars, diagonalize: bool=True):
-        self.ion = Ion(ion_name)
+    def __init__(self, ion: Ion, Hfield: tuple, cfp: CEFpars, diagonalize: bool=True):
+        self.ion = ion
         self.Jval = self.ion.J
         Jval = self.Jval
         

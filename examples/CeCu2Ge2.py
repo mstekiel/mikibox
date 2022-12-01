@@ -10,7 +10,7 @@ sys.path.append('C:/Users/Stekiel/Documents/GitHub/mikibox')
 import mikibox as ms
 
 
-lattice = ms.Lattice(4,4,10.6,90,90,90)
+lattice = ms.crystallography.Lattice([4,4,10.6,90,90,90])
 
 calculateTAS = True
 calculateMagnetism = True

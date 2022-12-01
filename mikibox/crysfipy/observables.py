@@ -212,16 +212,24 @@ def susceptibility(cefion, temperatures, Hfield_direction, method='perturbation'
             M = magnetization(cefion, temperature, Hfield)
             susceptibility[it] = np.linalg.norm(M)/eps
     elif method=='perturbation':
+        '''
+        There is some problems here that need to be solved.
+        '''
         susceptibility = np.empty(len(temperatures))
         #susceptibility.fill(np.nan)
 
         for it, temperature in enumerate(temperatures):
             # Tricky way to create a 2D array of energies associated with transitions between levels
             jumps = cefion.energies - cefion.energies[np.newaxis].T
+
+            # 1. jumps can be zero
+            # 2. argument in exp can be relatively big 2800, and reise overflow
+            # Probably some mathematics can be applied here to shorten these formulas and avoid big numbers
+            Tmx = -np.expm1(-jumps*C.meV2K/temperature)/jumps
+
+            # if the states are degenerated the diagonal is not enough
+            np.fill_diagonal(Tmx, 1*C.meV2K/temperature) 
             
-            
-            Tmx = (1 - np.exp(-jumps*C.meV2K/temperature))/jumps
-            np.fill_diagonal(Tmx, 1*C.meV2K/temperature)
             transition_probs = boltzman_population(cefion.energies, temperature)
             Tmx = Tmx * transition_probs[:, np.newaxis]
 

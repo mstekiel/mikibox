@@ -15,7 +15,7 @@ import sys
 sys.path.insert(0, os.path.abspath('..'))
 
 master_doc = 'index'
-autodoc_mock_imports = ['numpy']
+autodoc_mock_imports = ['numpy','matplotlib','scipy']
 
 
 # -- Project information -----------------------------------------------------
@@ -35,7 +35,9 @@ release = '0.2.0'
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
-    'sphinx.ext.viewcode'
+    'sphinx.ext.viewcode',
+    'sphinx.ext.autosummary',
+    'sphinx.ext.napoleon'
     ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -54,7 +56,7 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 #
 # pydata_sphinx_theme
 # sphinx_rtd_theme
-html_theme = 'classic'
+html_theme = 'bizstyle'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,

@@ -2,7 +2,7 @@
 
 https://mstekiel.github.io/mikibox/build/html/index.html
 
-It is formatted according to the numopydoc standards and Google Style for Python
+It is formatted according to the numpydoc standards and Google Style for Python
 
 https://numpydoc.readthedocs.io/en/latest/format.html#docstring-standard
 
@@ -10,8 +10,15 @@ https://djangocas.dev/docs/4.0/python-docstring-google-style-example.html
 
 ### Compiling and setting up the documentation.
 
-For windows run ./make.bat html in the terminal.
+For changes check the `index.rst` file and the contents od the `build` folder.
 
+For windows run in terminal
+>./make.bat html
+
+Alternatively, in the environment where pshinx is installed run
+> sphinx-build -M html . build
+
+### Other
 Some of the build directories have been rearranged in order to be able to host the documentation on GitHub Pages.
 The main thing is the redirecting index.html file in the main folder, that redirects to the real index file.
 

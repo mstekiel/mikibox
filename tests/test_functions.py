@@ -30,6 +30,20 @@ class VectorsTest(unittest.TestCase):
         np.testing.assert_allclose( ms.angle([1,1,0],[1,1,1]), np.arctan2(1,np.sqrt(2)), \
                                     atol=self.atol, rtol=self.rtol)
 
+        # Go around and check special values
+        for phi in np.linspace(0,180,25):
+            phiR = np.radians(phi)
+            calculated_angle = np.degrees(ms.angle([1,0,0],[np.cos(phiR),np.sin(phiR),0]))
+            np.testing.assert_allclose(calculated_angle , phi, \
+                                    atol=self.atol, rtol=self.rtol)
+
+        # All perpendicular
+        for phi in np.linspace(0,180,25):
+            phiR = np.radians(phi)
+            calculated_angle = np.degrees(ms.angle([0,0,1],[np.cos(phiR),np.sin(phiR),0]))
+            np.testing.assert_allclose(calculated_angle , 90, \
+                                    atol=self.atol, rtol=self.rtol) 
+
     def test_perp_matrix(self):
         # Q = [0,0,1] -> projects on the xy plane
         Q = np.array([0,0,1])

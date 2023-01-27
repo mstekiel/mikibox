@@ -12,6 +12,8 @@ Welcome to mikibox's documentation!
    
    source/mikibox
    source/crysfipy
+   source/crystallography
+   source/instruments
 	
 
 Indices and tables

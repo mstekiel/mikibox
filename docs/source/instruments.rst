@@ -1,0 +1,6 @@
+Instruments
+========================================
+
+.. currentmodule:: mikibox.instruments
+
+	

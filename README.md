@@ -5,7 +5,7 @@ https://mstekiel.github.io/mikibox/build/html/index.html
 
 Installation
 1. Create an empty virtual environment with the python version specified in `setup.py: python-version`
-2. Install `mikibox` locally with `python setupy.py develop`. The `develop` version allows to modify the source files and adapt to current needs.
+2. Install `mikibox` locally with `python setup.py develop` or `pip install -e .`. The `develop`/`-e` option allows to modify the source files and adapt to current needs. If you want to install extra packages for full development utilities do `pip install -e .[dev]`.
 
 Installation FAQ:
 - For a lightweight, fast installation miniconda is a great solution. A throwback is, its package manager conda or pip will nominally install the newest version of packages from their channels, which may produce problems. A good solution is to check the list of packages installed by Anaconda for your platform (https://docs.anaconda.com/anaconda/packages/pkg-docs/) and follow the version of packages from there. Otherwise, one might need to carefully test which version of each packages are compatible with each other.

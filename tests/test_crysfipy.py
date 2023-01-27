@@ -4,6 +4,22 @@ import mikibox as ms
 import mikibox.crysfipy as cfp
 import mikibox.crysfipy.constants as C
 
+class CrysFiPyInternalFunctionsTest(unittest.TestCase):
+    # Set up the test case with the tolerances for vectors tests
+    def setUp(self):
+        self.rtol = 1e-7
+        self.atol = 1e-15
+
+
+    def test_BoltzmannFactors(self):
+        # Check if the boltzmann distribution works well for the degenerated cases.
+
+        p1 = cfp.boltzman_population([0,0], 10)
+        np.testing.assert_allclose( [0.5, 0.5], p1, \
+                            atol=self.atol, rtol=self.rtol)
+
+
+
 class CrysFiPyTest(unittest.TestCase):
     # Set up the test case with the tolerances for vectors tests
     def setUp(self):
@@ -45,7 +61,7 @@ class CrysFiPyTest(unittest.TestCase):
         # Cermak et al., PNAS, April 2, 2019, vol. 116, no. 14, 6695–6700
         # Magnetoelastic hybrid excitations in CeAuAl3
         # www.pnas.org/cgi/doi/10.1073/pnas.1819664116
-        ce = cfp.CEFion("Ce", [0,0,0], cfp.CEFpars('C4h', [1.203, -0.001, 0.244], 'meV'))
+        ce = cfp.CEFion(cfp.Ion("Ce"), [0,0,0], cfp.CEFpars('C4h', [1.203, -0.001, 0.244], 'meV'))
 
         # Compare energies
         # All levels are two-fold degenerated, with excitation energies 2.96 meV and 24.27 meV
@@ -87,7 +103,7 @@ class CrysFiPyTest(unittest.TestCase):
         
         # The final set of parameters involves
         cefpars = np.array([461,165,-169,-1720,-900,-1324,-621,599,-561])*C.invcm2meV
-        tb = cfp.CEFion("Tb", [0,0,0], cfp.CEFpars('C2v', cefpars, 'meV'))
+        tb = cfp.CEFion(cfp.Ion("Tb"), [0,0,0], cfp.CEFpars('C2v', cefpars, 'meV'))
         
         print(tb.hamiltonian)
 

@@ -7,11 +7,14 @@ setup(name='mikibox',
     author='Michal Stekiel',
     author_email='michal.stekiel@gmail.com',
     packages=['mikibox'],
-    python_requires='==3.9',
+    python_requires='==3.9.*',
     install_requires=[
         'numpy==1.21.5',
         'matplotlib==3.5.2',
         'scipy==1.9.1'
     ],
+    extras_require={
+        "dev": ['sphinx==5.0.2', 'pandas==1.4.4'],
+    },
     include_package_data=True,
     zip_safe=False)

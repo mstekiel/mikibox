@@ -82,12 +82,12 @@ def cartesian2spherical(xyz):
     phi = np.arctan2(xyz[1], xyz[0])
     return [r,theta,phi]
     
-def norm(x):
+def norm(x, **kwargs):
     '''
     Take the Euclidean norm of the n-dimensional vector x.
     Wrapper for the `np.linalg.norm` function.
     '''
-    return np.linalg.norm(x)
+    return np.linalg.norm(x, **kwargs)
     
     
 def angle(v1: list[float], v2: list[float]) -> float:

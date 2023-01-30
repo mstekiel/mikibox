@@ -25,7 +25,8 @@ num_simulations = 100000
 # Calculated results: E1=7.091 meV, E2=11.772 meV
 
 CEFpars = ms.crysfipy.CEFpars('D4', [-10.26, -0.056, 2.67], 'K')
-cefion = ms.crysfipy.CEFion(ms.crysfipy.Ion('Ce'),[0,0,0], CEFpars)
+cefion = ms.crysfipy.CEFion(ms.crysfipy.Ion('Ce'),[0,0,0], CEFpars, diagonalize=False)
+cefion.diagonalize(shiftToZero=False)
 
 print(cefion.cfp)
 print(cefion)
@@ -44,7 +45,7 @@ if calculateTAS:
     for hkl in [1.25,1.25,0], [0,0,4]:
         
         label = f'Q=({hkl[0]} {hkl[1]} {hkl[2]})'
-        Q = lattice.hkl2k(hkl)
+        Q = lattice.hkl2Q(hkl)
         De, Dint = ms.crysfipy.neutronint(cefion,temperature, Q=Q, Ei=1.1*np.max(e), scheme='single-crystal')
        
         

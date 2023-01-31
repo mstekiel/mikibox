@@ -1,0 +1,292 @@
+
+
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>mikibox.crysfipy.cefion &#8212; mikibox 0.2.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/bizstyle.css" />
+    
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">mikibox 0.2.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mikibox.crysfipy.cefion</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for mikibox.crysfipy.cefion</h1><div class="highlight"><pre>
+<span></span><span class="c1"># from .. import functions as ms</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">constants</span> <span class="k">as</span> <span class="n">C</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">CEFpars</span><span class="p">,</span> <span class="n">Ion</span>
+<span class="kn">from</span> <span class="nn">.cefmatrices</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="c1"># from numpy import conj, transpose, dot, diag</span>
+<span class="c1"># import numbers</span>
+
+
+<div class="viewcode-block" id="CEFion"><a class="viewcode-back" href="../../../source/crysfipy.html#mikibox.crysfipy.CEFion">[docs]</a><span class="k">class</span> <span class="nc">CEFion</span><span class="p">:</span>
+    <span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Object representing a rare-earth ion in CF potential. It is internally calculated in the meV units.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters:</span>
+<span class="sd">        ion : string</span>
+<span class="sd">            Name of the ion. They are tabulated in :obj:`ion` with their parameters.</span>
+<span class="sd">        Hfield : 1D array of floats</span>
+<span class="sd">            External magnetic field in *T* units.</span>
+<span class="sd">        cfp : ``crysfipy.CEFpars``</span>
+<span class="sd">            Crystal field parameters</span>
+<span class="sd">        diagonalize : bool, optional</span>
+<span class="sd">            If true (default) then it automatically diagonalizes Hamiltonian, calculates energy levels and sorts all matrices so that the first eigenvector corresponds to the lowest energy level and the last one to the highest.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        </span>
+<span class="sd">        TODO</span>
+<span class="sd">        ce = CEFion(&quot;Ce&quot;, [0,0,0], [&quot;T&quot;, 10])</span>
+<span class="sd">        print(ce)</span>
+<span class="sd">        Energy levels:</span>
+<span class="sd">        E(0) =	0.0000	 2fold-degenerated</span>
+<span class="sd">        E(1) =	3600.0000	 4fold-degenerated</span>
+<span class="sd">        </span>
+<span class="sd">    Attributes:</span>
+<span class="sd">        ion : ``crysfipy:ion``</span>
+<span class="sd">            The ``ion`` object that represents an isolated rare-earth ion.</span>
+<span class="sd">        Jval : int/2</span>
+<span class="sd">            The J value corresponding to the L+S quantum numbers. Not to be confused with the ``J`` operator.</span>
+<span class="sd">        Hfield : array_like</span>
+<span class="sd">            Vector in real space corresponding to the external magnetic field in T units.</span>
+<span class="sd">        cfp : ``crysfipy.reion.cfp``</span>
+<span class="sd">            Crystal field parameters</span>
+<span class="sd">        hamiltonian : ndarray</span>
+<span class="sd">            Hamiltonian operator. :math:`\hat{\mathcal{H}} = \sum_{ij} B_i^j \hat{O}_i^j + g_J (H_x \hat{J}_x + H_y \hat{J}_y + H_z \hat{J}_z)`</span>
+<span class="sd">        Jx, Jy, Jz : ndarray</span>
+<span class="sd">            Matrices representing the prinicpal quantum operators :math:`\hat{J}_\\alpha`` with :math:`\\alpha=[x,y,z]`.</span>
+<span class="sd">        J : ndarray</span>
+<span class="sd">            Total angular momentum vector operator :math:`\hat{J}=[\hat{J}_x, \hat{J}_y, \hat{J}_z]`. It&#39;s multidimensionality takes some time to get used to.</span>
+<span class="sd">        energies : ndarray</span>
+<span class="sd">            Eigenenergies of the Hamiltonian.</span>
+<span class="sd">        eigenvectors : ndarray</span>
+<span class="sd">            Eigenvectors of the Hamiltonian.</span>
+<span class="sd">        degeneracies : list</span>
+<span class="sd">            List containing entries like [energy, degeneracy], which describes how degenerated is the given energy level.</span>
+<span class="sd">        freeionkets : list</span>
+<span class="sd">            List of kets corresponding to the J basis of the free ion problem.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ion</span><span class="p">:</span> <span class="n">Ion</span><span class="p">,</span> <span class="n">Hfield</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">cfp</span><span class="p">:</span> <span class="n">CEFpars</span><span class="p">,</span> <span class="n">diagonalize</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ion</span> <span class="o">=</span> <span class="n">ion</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Jval</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ion</span><span class="o">.</span><span class="n">J</span>
+        <span class="n">Jval</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Jval</span>
+        
+        <span class="c1"># TODO check if the Hfield parameter is appropriate</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Hfield</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">Hfield</span><span class="p">)</span>
+            
+        <span class="c1"># Assign CEF parameters as CEFpars class</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cfp</span> <span class="o">=</span> <span class="n">cfp</span>
+        
+
+        <span class="c1"># Prepare the rest of the fields based on the main input parameters</span>
+
+        <span class="c1"># Main Ji matrices</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Jx</span> <span class="o">=</span> <span class="n">J_x</span><span class="p">(</span><span class="n">Jval</span><span class="p">);</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">Jy</span> <span class="o">=</span> <span class="n">J_y</span><span class="p">(</span><span class="n">Jval</span><span class="p">);</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Jz</span> <span class="o">=</span> <span class="n">J_z</span><span class="p">(</span><span class="n">Jval</span><span class="p">);</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">J</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">Jx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Jy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Jz</span><span class="p">]</span>
+        
+        <span class="c1"># matrix with projection of moments to x, y, z directions for all J2p1 levels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">moment</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">int</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">Jval</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span><span class="mi">3</span><span class="p">),</span> <span class="nb">float</span><span class="p">)</span>  
+        
+        <span class="c1"># Prepare a list os kets that form the basis</span>
+        <span class="k">if</span> <span class="n">Jval</span><span class="o">%</span><span class="mi">1</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">freeionkets</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;|</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="si">}</span><span class="s1">&gt;&#39;</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">Jval</span><span class="p">,</span><span class="o">-</span><span class="n">Jval</span><span class="p">,</span><span class="nb">int</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">Jval</span><span class="o">+</span><span class="mi">1</span><span class="p">))]</span>
+        <span class="k">elif</span> <span class="n">Jval</span><span class="o">%</span><span class="mi">1</span><span class="o">==</span><span class="mf">0.5</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">freeionkets</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;|</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">x</span><span class="p">)</span><span class="si">:</span><span class="s1">d</span><span class="si">}</span><span class="s1">/2&gt;&#39;</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">Jval</span><span class="p">,</span><span class="o">-</span><span class="n">Jval</span><span class="p">,</span><span class="nb">int</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">Jval</span><span class="o">+</span><span class="mi">1</span><span class="p">))]</span>
+        
+        
+        <span class="c1"># THE HAMILTONIAN</span>
+        <span class="n">H</span> <span class="o">=</span> <span class="o">-</span><span class="n">C</span><span class="o">.</span><span class="n">uB</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">ion</span><span class="o">.</span><span class="n">gJ</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;ijk,i&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">J</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Hfield</span><span class="p">)</span>
+        
+        <span class="c1"># Store Stevens operators in the dictionary containing pointers tu functions</span>
+        <span class="n">StevensOperator</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">&quot;B20&quot;</span><span class="p">:</span><span class="n">O_20</span><span class="p">,</span> <span class="s2">&quot;B22&quot;</span><span class="p">:</span><span class="n">O_22</span><span class="p">,</span><span class="s2">&quot;B2m2&quot;</span><span class="p">:</span><span class="n">O_2m2</span><span class="p">,</span>\
+                            <span class="s2">&quot;B40&quot;</span><span class="p">:</span><span class="n">O_40</span><span class="p">,</span> <span class="s2">&quot;B42&quot;</span><span class="p">:</span><span class="n">O_42</span><span class="p">,</span><span class="s2">&quot;B4m2&quot;</span><span class="p">:</span><span class="n">O_4m2</span><span class="p">,</span> <span class="s2">&quot;B43&quot;</span><span class="p">:</span><span class="n">O_43</span><span class="p">,</span><span class="s2">&quot;B4m3&quot;</span><span class="p">:</span><span class="n">O_4m3</span><span class="p">,</span> <span class="s2">&quot;B44&quot;</span><span class="p">:</span><span class="n">O_44</span><span class="p">,</span><span class="s2">&quot;B4m4&quot;</span><span class="p">:</span><span class="n">O_4m4</span><span class="p">,</span> \
+                            <span class="s2">&quot;B60&quot;</span><span class="p">:</span><span class="n">O_60</span><span class="p">,</span> <span class="s2">&quot;B62&quot;</span><span class="p">:</span><span class="n">O_62</span><span class="p">,</span><span class="s2">&quot;B6m2&quot;</span><span class="p">:</span><span class="n">O_6m2</span><span class="p">,</span> <span class="s2">&quot;B63&quot;</span><span class="p">:</span><span class="n">O_63</span><span class="p">,</span><span class="s2">&quot;B6m3&quot;</span><span class="p">:</span><span class="n">O_6m3</span><span class="p">,</span> <span class="s2">&quot;B64&quot;</span><span class="p">:</span><span class="n">O_64</span><span class="p">,</span><span class="s2">&quot;B6m4&quot;</span><span class="p">:</span><span class="n">O_6m4</span><span class="p">,</span> <span class="s2">&quot;B66&quot;</span><span class="p">:</span><span class="n">O_64</span><span class="p">,</span><span class="s2">&quot;B6m6&quot;</span><span class="p">:</span><span class="n">O_6m6</span><span class="p">}</span>
+        <span class="k">for</span> <span class="n">Bij_name</span><span class="p">,</span> <span class="n">Bij_value</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cfp</span><span class="o">.</span><span class="n">B_names</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cfp</span><span class="o">.</span><span class="n">B_values</span><span class="p">):</span>
+            <span class="n">H</span> <span class="o">+=</span> <span class="n">Bij_value</span> <span class="o">*</span> <span class="n">StevensOperator</span><span class="p">[</span><span class="n">Bij_name</span><span class="p">](</span><span class="n">Jval</span><span class="p">)</span>
+            
+
+            
+        <span class="c1"># Lets take cc of everything to get rid of complex eigenvalues.</span>
+        <span class="c1"># Another idea is to take just cc of the Zeeman part which sometimes makes problems</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hamiltonian</span> <span class="o">=</span> <span class="p">(</span><span class="n">H</span> <span class="o">+</span> <span class="n">H</span><span class="o">.</span><span class="n">conj</span><span class="p">())</span><span class="o">/</span><span class="mi">2</span>
+        
+        <span class="c1"># Diagonalize the Hamiltonian</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">diagonalize</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">diagonalize</span><span class="p">()</span>
+    
+    <span class="k">def</span> <span class="nf">diagonalize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sortWithE</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">shiftToZero</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Diagonalize the Hamiltonian, and change to the sorted eigenvector base. The default sorting is done according to eigenenergies, so that the first vector [1,0,...,0] is the lowest eigenstate, and the last one [0,...,0,1] is the highest one. Changing the base greatly faiclitates further calculations based on the evaluation of matrix elements.</span>
+<span class="sd">        </span>
+<span class="sd">        It updates the attributes: {``Jx``,``Jy``,``Jz``,``J``,``energies``,``eigenvectors``,``degeneracies``}.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+<span class="sd">            </span>
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError </span>
+<span class="sd">                If the calculated eigenenergies are not real.</span>
+<span class="sd">                </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+    
+        <span class="c1"># Diagonalize the Hamiltonian</span>
+        <span class="n">E</span><span class="p">,</span> <span class="n">U</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hamiltonian</span><span class="p">);</span>
+        
+        <span class="k">if</span> <span class="nb">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">iscomplex</span><span class="p">(</span><span class="n">E</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Final energies are complex!&#39;</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">energies</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">E</span><span class="p">)</span> <span class="o">-</span> <span class="nb">int</span><span class="p">(</span><span class="n">shiftToZero</span><span class="p">)</span><span class="o">*</span><span class="nb">min</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">E</span><span class="p">))</span>     <span class="c1"># shift to zero level</span>
+
+        <span class="c1"># TODO check if U is orthogonal based on comparison with QR decomposition</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eigenvectors</span> <span class="o">=</span> <span class="n">U</span>
+        
+
+        <span class="c1"># Sorting</span>
+        <span class="k">if</span> <span class="n">sortWithE</span><span class="p">:</span>
+            <span class="n">sortedIndices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">energies</span><span class="o">.</span><span class="n">argsort</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sortedIndices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="n">Jval</span><span class="p">)</span>
+            
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">eigenvectors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eigenvectors</span><span class="p">[:,</span><span class="n">sortedIndices</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">energies</span> <span class="o">=</span>  <span class="bp">self</span><span class="o">.</span><span class="n">energies</span><span class="p">[</span><span class="n">sortedIndices</span><span class="p">]</span>
+        
+        
+        
+        <span class="c1"># Change the basis of principal operators to the eigenstate basis with specified sorting scheme</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Jx</span> <span class="o">=</span> <span class="n">dot</span><span class="p">(</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">eigenvectors</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span><span class="o">.</span><span class="n">transpose</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">Jx</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">eigenvectors</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Jy</span> <span class="o">=</span> <span class="n">dot</span><span class="p">(</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">eigenvectors</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span><span class="o">.</span><span class="n">transpose</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">Jy</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">eigenvectors</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Jz</span> <span class="o">=</span> <span class="n">dot</span><span class="p">(</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">eigenvectors</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span><span class="o">.</span><span class="n">transpose</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">Jz</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">eigenvectors</span><span class="p">)</span>
+       
+        <span class="bp">self</span><span class="o">.</span><span class="n">J</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">Jx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Jy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Jz</span><span class="p">])</span>
+
+        
+
+        <span class="c1">#calculate degeneracy</span>
+        <span class="n">deg_e</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">levels</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">deg_e</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">energies</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">energies</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">deg_e</span><span class="p">[</span><span class="n">levels</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="p">):</span>
+                <span class="n">levels</span><span class="o">+=</span><span class="mi">1</span>
+                <span class="n">deg_e</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">deg_e</span><span class="p">[</span><span class="n">levels</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">degeneracies</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">deg_e</span><span class="p">)</span>   
+        
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Nice printout of calculated parameters</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters:</span>
+<span class="sd">            precision : int, optional</span>
+<span class="sd">                How many significant digits should be shown for printout of energy and eigenvector coefficients.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">ret</span> <span class="o">+=</span> <span class="s2">&quot;Energy levels and corresponding eigenfunctions:</span><span class="se">\n</span><span class="s2">&quot;</span>
+               
+        <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">levels</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">level</span><span class="p">,</span><span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">degeneracies</span><span class="p">):</span>
+            <span class="n">level_str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="n">energy</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">degeneracy</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">level_str</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;E(</span><span class="si">{</span><span class="n">level</span><span class="si">:</span><span class="s1">d</span><span class="si">}</span><span class="s1">) =</span><span class="se">\t</span><span class="si">{</span><span class="n">energy</span><span class="si">:</span><span class="s1">.</span><span class="si">{</span><span class="n">precision</span><span class="si">}}</span><span class="s1"> meV</span><span class="se">\t</span><span class="si">{</span><span class="n">degeneracy</span><span class="si">:</span><span class="s1">2d</span><span class="si">}</span><span class="s1">fold-degenerated</span><span class="se">\n</span><span class="s1">&#39;</span>
+            
+            <span class="c1"># List degenerated eigenvectors</span>
+            <span class="k">for</span> <span class="n">ev</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">eigenvectors</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="n">n</span><span class="p">:</span><span class="n">n</span><span class="o">+</span><span class="n">degeneracy</span><span class="p">]:</span>
+                <span class="n">ev_components</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">c</span><span class="p">,</span><span class="n">ket</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ev</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">freeionkets</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="n">precision</span><span class="p">):</span>    <span class="c1"># Arbitrary tolerance</span>
+                        <span class="n">ev_components</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;(</span><span class="si">{</span><span class="n">c</span><span class="si">:</span><span class="s1">.</span><span class="si">{</span><span class="n">precision</span><span class="si">}</span><span class="s1">f</span><span class="si">}</span><span class="s1">)</span><span class="si">{</span><span class="n">ket</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                        
+                <span class="n">level_str</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;ev_</span><span class="si">{</span><span class="n">level</span><span class="si">}</span><span class="s1">: &#39;</span> <span class="o">+</span> <span class="s1">&#39; + &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ev_components</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+
+            <span class="n">levels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">level_str</span><span class="p">)</span>
+            <span class="n">n</span> <span class="o">+=</span> <span class="n">degeneracy</span>
+        
+        <span class="n">ret</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">levels</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ret</span></div>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">mikibox 0.2.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mikibox.crysfipy.cefion</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2022, Michal Stekiel.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
+    </div>
+  </body>
+</html>

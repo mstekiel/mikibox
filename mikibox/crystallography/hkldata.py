@@ -4,7 +4,7 @@ from .lattice import Lattice
 
 
 class HKLdata():
-    def __init__(self, filename=None, handling_flag=None):
+    def __init__(self, filename: str=None, handling_flag: str=None):
         '''
         Load the data of the hkl file into internal structure.
 
@@ -14,7 +14,7 @@ class HKLdata():
             'proper'
                 Proper ones that finish with (000) reflection
             'crysalis'
-                Crysalis ones that finish with (000) reflection and heve ins file input at the end
+                Crysalis ones that finish with (000) reflection and have ins file input at the end
         '''
 
         if isinstance(filename, None):

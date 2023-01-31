@@ -18,19 +18,13 @@ calculateTAS = False
 calculateTOF = True
 
 
-# Following calculation is to cross check the calculations for the orthorhombic case with Ce
-# Source: Klicpera et al, PHYSICAL REVIEW B 95, 085107 (2017)
-#cefion_CePd2Ga2 = ms.crysfipy.CEFion(ms.crysfipy.Ion('Ce'),[0,0,0], ["o", 0.33, 0.472, -0.009, 0.111, 0.055])
-
-# Published results:  E1=7.2 meV,   E2=12.2 meV
-# Calculated results: E1=7.091 meV, E2=11.772 meV
-
 def fit_CEF_pars(CEFparameters, constraints):
     def residuals(CEFpars,constraints):
         energy_levels = constraints[:6]
         Iratios = constraints[6:]
         try:
-            cefion_CePdAl3 = ms.crysfipy.CEFion(ms.crysfipy.Ion('Ce'),[0,0,0], ['o', *CEFpars])
+            CEFpars = ms.crysfipy.CEFpars('D4', CEFparameters, 'meV')
+            cefion_CePdAl3 = ms.crysfipy.CEFion(ms.crysfipy.Ion('Ce'),[0,0,0], CEFpars)
 
             # Matching to the measured energy
             energy_resd = cefion_CePdAl3.energies-energy_levels
@@ -38,7 +32,7 @@ def fit_CEF_pars(CEFparameters, constraints):
             # Matching the measured intensity
             Irat = []
             for hkl in [[2,2,0],[0,0,4]]:
-                De, Dint = ms.crysfipy.neutronint(cefion_CePdAl3,10, Q=lattice.hkl2k(hkl), Ei=25, scheme='single-crystal')
+                De, Dint = ms.crysfipy.neutronint(cefion_CePdAl3,10, Q=lattice.hkl2Q(hkl), Ei=99, scheme='single-crystal')
                 E1 = cefion_CePdAl3.energies[2] # should be the 2.08 meV transition
                 E2 = cefion_CePdAl3.energies[4] # should be the 7.15 meV transition
                 I = [0,0]
@@ -79,8 +73,9 @@ initial_Bij = [1.98770910e-01, 1.51547490e-01, 3.82500000e-03, 3.70048800e-02, 1
 
 
 fit_Bij, score = fit_CEF_pars(initial_Bij, constraints=[0,0,2.08,2.08,7.15,7.15,2,0.8])
+fitted_CEFpars = ms.crysfipy.CEFpars('C2v', fit_Bij, 'meV')
 
-cefion_CePdAl3 = ms.crysfipy.CEFion(ms.crysfipy.Ion('Ce'),[0,0,0], ['o', *fit_Bij])
+cefion_CePdAl3 = ms.crysfipy.CEFion(ms.crysfipy.Ion('Ce'),[0,0,0], fitted_CEFpars)
 
 print('Bfit:',fit_Bij, score)
 print(cefion_CePdAl3.cfp)
@@ -111,7 +106,7 @@ if calculateTTAS:
         label = f'T={temperature:3d} K'
         
         for hkl in [[2,2,0]]:
-            Q = lattice.hkl2k(hkl)
+            Q = lattice.hkl2Q(hkl)
             De, Dint = ms.crysfipy.neutronint(cefion_CePdAl3,temperature, Q=Q, Ei=1.1*np.max(e), scheme='single-crystal')
            
             
@@ -146,11 +141,11 @@ if calculateTAS:
         
         if isinstance(hkl,str):
             label = f'powder average'
-            Q = lattice.hkl2k([2,2,0])
+            Q = lattice.hkl2Q([2,2,0])
             De, Dint = ms.crysfipy.neutronint(cefion_CePdAl3,temperature, Q=ms.norm(Q), Ei=1.1*np.max(e), scheme='powder')
         else:
             label = f'Q=({hkl[0]} {hkl[2]} {hkl[1]})'
-            Q = lattice.hkl2k(hkl)
+            Q = lattice.hkl2Q(hkl)
             De, Dint = ms.crysfipy.neutronint(cefion_CePdAl3,temperature, Q=Q, Ei=1.1*np.max(e), scheme='single-crystal')
        
         
@@ -168,6 +163,7 @@ if calculateTAS:
     fig.savefig('CePdAl3-TAS-spectra.png', dpi=400)
     
 if calculateTOF:
+    print('Preparing TOF plots')
     fig, ax = plt.subplots(nrows=3, figsize=(4.2,12), tight_layout=True)
 
     e = np.linspace(-10,40,1000)
@@ -181,7 +177,7 @@ if calculateTOF:
     ind1 = np.linspace(-1,1,N)*3
     ind2 = np.linspace(-1,1,N)*7
     
-    Qs = lattice.hkl2k([[h,h,k] for h in ind1 for k in ind2])
+    Qs = lattice.hkl2Q([[h,h,k] for h in ind1 for k in ind2])
 
     for Q in Qs:
         De, Dint = ms.crysfipy.neutronint(cefion_CePdAl3,temperature,Q, Ei=15, scheme='single-crystal')
@@ -206,4 +202,4 @@ if calculateTOF:
         ax[it].xaxis.set_major_locator(ticker.FixedLocator([-6,-4,-2,0,2,4,6]))
 
     #ax.legend()
-    fig.savefig('CePdAl3-TOF-spectra.png', dpi=400)
+    fig.savefig('.\examples\CePdAl3-TOF-spectra.png', dpi=400)

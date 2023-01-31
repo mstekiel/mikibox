@@ -9,6 +9,7 @@ class CEFpars:
     It simplifies the creation of the CF parameter sets considering the point group of the ion.
     The symmetry restrictions follow from https://www2.cpfs.mpg.de/~rotter/homepage_mcphase/manual/node133.html
     It also allows to look up the symmetry restrictions and nice printing of parameters.
+    For the lookup table between notations on point groups see: https://en.wikipedia.org/wiki/Point_group
 
     Special care was taken for the cubic space group, as its symmetry imposes some algebraic
     relations between the non-zero elements.    

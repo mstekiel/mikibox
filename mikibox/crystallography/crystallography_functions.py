@@ -1,7 +1,7 @@
 import numpy as np
 #import mikibox as ms
 
-def lattice_pars_from_UB(UB):
+def lattice_pars_from_UB(UB: np.ndarray) -> tuple(float,float,float,float,float,float):
     '''
     Determine the lattice parameters from the UB matrix.
     

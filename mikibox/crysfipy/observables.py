@@ -21,7 +21,7 @@ def boltzman_population(energies: list[float], temperature: float) -> list[float
         List of occupation probabilities for each energy level.
     '''
     
-    p = np.exp(-np.array(energies)*C.meV2K/temperature)
+    p = np.exp(-np.array(energies - min(energies))*C.meV2K/temperature)
     Z = sum(p)
     return p / Z
 

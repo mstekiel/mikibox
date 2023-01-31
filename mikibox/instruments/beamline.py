@@ -15,7 +15,7 @@ class Beamline():
         
     '''
 
-    def __init__(self, omega_sense=1,omega_offset=0, gamma_sense=1,gamma_offset=0, nu_sense=1,nu_offset=0):
+    def __init__(self, omega_sense: float=1,omega_offset: float=0, gamma_sense: float=1,gamma_offset: float=0, nu_sense: float=1,nu_offset: float=0):
         self._omega_sense = omega_sense
         self._omega_offset = omega_offset
         
@@ -26,9 +26,8 @@ class Beamline():
         self._nu_offset = nu_offset
             
 
-    def calHKL(self, UB, lbd, omega, gamma, nu):
+    def calHKL(self, UB: np.ndarray, lbd: float, omega: float, gamma: float, nu: float) -> np.ndarray:
         '''
-        calHKL(UB, lbd, omega, gamma, nu)
         Calculate the current position of the detector in reciprocal space, based on the UB matrix and the real space angles.
         lambda in Angstroems
         angles in degrees
@@ -45,7 +44,7 @@ class Beamline():
         Qxyz = np.array([np.cos(nu)*np.cos(gamma)-1 , np.cos(nu)*np.sin(gamma), np.sin(nu)])/lbd
         return np.dot(UBm,Qxyz)
         
-    def LL_integrate(self, counts, omega_step):
+    def LL_integrate(self, counts: list[float], omega_step: list[float]) -> tuple:
         '''
         Integrate the intensity of a reflection measured in an omega scan by a point detector.
         The method follows the Lehman-Larsen algorithm: Lehmann & Larsen (1974). Acta Cryst. A30, 580-584
@@ -73,9 +72,9 @@ class Beamline():
         bl = np.argmin(sJJ_l)+beta
         print(sJJ_l)
         
-        return 0, 0, bl, br
+        return (0, 0, bl, br)
         
-    def fit_integrate(self, x, y, silent=False):
+    def fit_integrate(self, x: list[float], y: list[float], silent: bool=False) -> tuple:
         # Determine initial parameters
         x0 = x[np.argmax(y)]
         s = 2*np.abs(x[1]-x[0])

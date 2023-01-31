@@ -15,7 +15,7 @@ class CEFpars:
     relations between the non-zero elements.    
 
     Attributes:
-        pointGroup : string
+        pointGroupName : string
             Name of the point group symmetry
         lattice
             Type of the Bravais lattice
@@ -38,7 +38,7 @@ class CEFpars:
         B6m4 = 9.798e-06 meV
     """
     
-    def allowed_Bpars(self, pointGroup):
+    def allowed_Bpars(self, pointGroupName: str) -> list[str]:
         # triclinic systems not implemented
         
         # List of allowed parameters is compiled based on McPhase manual
@@ -70,16 +70,16 @@ class CEFpars:
             'Td':r11, 'O':r11,'Oh':r11\
         }
         
-        if pointGroup not in allowed_Bpars:
-            raise ValueError(f'The desired point group name "{pointGroup}" is improper or not implemented')
+        if pointGroupName not in allowed_Bpars:
+            raise ValueError(f'The desired point group name "{pointGroupName}" is improper or not implemented')
         
-        return allowed_Bpars[pointGroup]
+        return allowed_Bpars[pointGroupName]
     
-    def __init__(self, pointGroup, Bpars, units):
-        self.B_names = self.allowed_Bpars(pointGroup)
+    def __init__(self, pointGroupName: str, Bvalues: list[float], units: str):
+        self.B_names = self.allowed_Bpars(pointGroupName)
     
-        self.pointGroup = pointGroup
-        self.lattice = self._assignLattice(pointGroup)
+        self.pointGroupName = pointGroupName
+        self.lattice = self._assignLattice(pointGroupName)
 
 
         # Check units and assign conversion factors
@@ -90,7 +90,7 @@ class CEFpars:
         # First, set all to zero
         self.B_values = np.zeros(len(self.B_names))
         
-        for it,Bval in enumerate(Bpars):
+        for it,Bval in enumerate(Bvalues):
             self.B_values[it] = Bval*unitConversions[units]
                 
         # In case of cubic symmetry the Bpars are given in form B40, B60, B66
@@ -101,14 +101,14 @@ class CEFpars:
             B60 = self.B_values[1]
             B66o4 = self.B_values[2]
             
-            if pointGroup in ['T','Th']:
+            if pointGroupName in ['T','Th']:
                 self.B_values[0] = B40
                 self.B_values[1] = 5/2*B40
                 self.B_values[2] = B60
                 self.B_values[3] = -B66o4
                 self.B_values[4] = -21/2*B60
                 self.B_values[5] = B66o4
-            elif pointGroup in ['Td','O','Oh']:
+            elif pointGroupName in ['Td','O','Oh']:
                 self.B_values[0] = B40
                 self.B_values[1] = 5/2*B40
                 self.B_values[2] = B60
@@ -116,13 +116,13 @@ class CEFpars:
 
             
     def __str__(self):
-        ret = f"Set of CEF parameters for {self.pointGroup} point group in a {self.lattice} lattice\n"
+        ret = f"Set of CEF parameters for {self.pointGroupName} point group in a {self.lattice} lattice\n"
         for Bname, Bvalue in zip(self.B_names, self.B_values): 
             ret += f'{Bname} = {Bvalue:.4} meV\n'
             
         return ret
             
-    def _assignLattice(self, pointGroup):
+    def _assignLattice(self, pointGroupName) -> str:
         PG2lattice = {
             'C2':'monoclinic', 'Cs':'monoclinic', 'C2h':'monoclinic',\
             'C2v':'orthorhombic','D2':'orthorhombic', 'D2h':'orthorhombic',\
@@ -136,4 +136,4 @@ class CEFpars:
             'Td':'cubic', 'O':'cubic','Oh':'cubic'\
         }
         
-        return PG2lattice[pointGroup]
+        return PG2lattice[pointGroupName]

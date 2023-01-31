@@ -1,5 +1,7 @@
 from math import pi
 
+numerical_zero = 1e-12  # python3.9.15 precision for floats seems to be around 1e-15, so lets say everything below 
+
 _h = 6.626075540e-34  # Jsec     Planck constant h
 _e = 1.6021773349e-19 # Coulomb  electron charge 
 _c = 2.99792458e8   # m/sec      Speed of light

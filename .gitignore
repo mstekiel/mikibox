@@ -1,6 +1,7 @@
 # general things to ignore
 __pycache__/
-.vscode
+.vscode/
+build/
 *.egg-info/
 *.egg
 *.py[cod]

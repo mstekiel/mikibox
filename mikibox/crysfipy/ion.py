@@ -22,7 +22,7 @@ class Ion:
             Dictionary of coefficients, used to calculate the magnetic form factor
     """
 
-    def __init__(self, ion_name):
+    def __init__(self, ion_name: str):
         self.name = ion_name.lower()
 
         atomicDatabase = {
@@ -71,7 +71,7 @@ class Ion:
         elementData = atomicDatabase[self.name]
 
         self.J     = elementData['J']
-        self.J2p1  = int(2 * elementData['J'] + 1)
+        self.J2p1  = int(2 * self.J + 1)
         self.gJ    = elementData['gJ']
         self.Alpha = elementData['alpha']
         self.Beta  = elementData['beta']
@@ -87,7 +87,11 @@ class Ion:
         
     def _m_in_vacuum(self):
         # Calculate magnetic moment of an isolated ion in the units of Bohr magnetons.
-        return self.gJ*np.sqrt(self.J*(self.J+1))
+        return self.gJ*np.abs(self.J)
+
+    def _m_dynamic(self):
+        # Calculate magnetic moment of an isolated ion when calculating susceptibility.
+        return self.gJ*np.abs(self.J*(self.J+1))
         
     def mff(self,Q):
         '''

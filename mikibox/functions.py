@@ -82,18 +82,23 @@ def cartesian2spherical(xyz):
     phi = np.arctan2(xyz[1], xyz[0])
     return [r,theta,phi]
     
-def norm(x):
-    return np.sqrt(np.dot(x,x))
+def norm(x, **kwargs):
+    '''
+    Take the Euclidean norm of the n-dimensional vector x.
+    Wrapper for the `np.linalg.norm` function.
+    '''
+    return np.linalg.norm(x, **kwargs)
     
     
-def angle(v1,v2):
+def angle(v1: list[float], v2: list[float]) -> float:
     '''
     Return the angle between two vectors
     '''
     # Clip is required to deal with floating points.
-    return np.arccos( np.clip( np.dot(v1,v2)/norm(v1)/norm(v2), 0,1) )
+    return np.arccos(np.clip( np.dot(v1,v2)/norm(v1)/norm(v2), -1, 1))
 
-def perp_matrix(q):
+
+def perp_matrix(q: list[float]):
     '''
     Return the matrix representing projection on the plane perpendicular to the given vector q
     '''

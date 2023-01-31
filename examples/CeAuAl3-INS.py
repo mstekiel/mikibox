@@ -109,9 +109,11 @@ if calculateFormFactor:
 
 if calculateMagnetism:
     temperature=0.1
-    temperatures = np.linspace(0.1,300,101)
+    temperatures = np.linspace(1,300,101)
 
     fig, axs = plt.subplots(figsize=(5,10), nrows=3, tight_layout=True)
+
+
 
 
     # Set up the susceptibility calculated from magnetization
@@ -128,6 +130,8 @@ if calculateMagnetism:
 
     ax.legend(title=f'CeAu$_2$Al$_3$ magnetization')
 
+
+
     # Set up the susceptibility calculated from perturbation
     ax = axs[1]
 
@@ -135,15 +139,17 @@ if calculateMagnetism:
     ax.set_ylabel('Magnetic susceptibility ($\mu_B^2$/Ce)')
     #ax.set_ylim(0,4)
 
-#     chi_100 = ms.crysfipy.susceptibility(cefion, temperatures , [1,0,0], method='perturbation')
-#     chi_001 = ms.crysfipy.susceptibility(cefion, temperatures , [0,0,1], method='perturbation')
+    chi_100 = ms.crysfipy.susceptibility(cefion, temperatures , [1,0,0], method='perturbation')
+    chi_001 = ms.crysfipy.susceptibility(cefion, temperatures , [0,0,1], method='perturbation')
 
-# #    print(chi_100)
+    print(chi_100)
 
-#     ax.plot(temperatures, chi_100, marker='^', color='red', label='$\chi$ || [100]', mfc=None)
-#     ax.plot(temperatures, chi_001, marker='o', color='blue', label='$\chi$ || [001]', mfc=None)
+    ax.plot(temperatures, chi_100, marker='^', color='red', label='$\chi$ || [100]', mfc=None)
+    ax.plot(temperatures, chi_001, marker='o', color='blue', label='$\chi$ || [001]', mfc=None)
 
-    ax.legend(title=f'CeAu$_2$Al$_3$ magnetization')
+    ax.legend(title=f'CeAu$_2$Al$_3$ perturbation')
+
+
 
     # Set up the magnetization
     ax = axs[2]
@@ -156,7 +162,6 @@ if calculateMagnetism:
     for field in fields:
         Ma.append(ms.crysfipy.magnetization(cefion, temperature, [field,0,0])[0])
         Mc.append(ms.crysfipy.magnetization(cefion, temperature, [0,0,field])[2])
-
 
 
     ax.plot(fields, Ma, marker='^', color='red', label='H || [100]')

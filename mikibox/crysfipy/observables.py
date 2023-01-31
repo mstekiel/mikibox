@@ -25,27 +25,6 @@ def boltzman_population(energies: list[float], temperature: float) -> list[float
     Z = sum(p)
     return p / Z
 
-def _rawneutronint(E, J2_perp, gJ, T):
-    """Returns transition intensities in barn.
-    
-    TODO I think the Debye-Waller factor needs to be incorporated here for proper inter-Temperature comparisons
-
-    Args:
-        E (2D array of floats): matrix of energy changes corresponding to transitions in meV
-        J2_perp (2D array of floats): matrix of squared J
-        gJ (float): Landé factor
-        T (float): temperature in **K**
-    """
-    r02 = C.R0 * C.R0  *1e28 # to have value in barn
-    c = np.pi * r02 * gJ * gJ
-    
-    # Calculate the occupancy of the levels at given temperature
-    prst = boltzman_population(E[0,:], T)
-    
-    # Multiply the matrix elements by uprobability of occupying certain level
-    trans_int = J2_perp * prst[:, np.newaxis] * c  #transition intensities in barn
-    
-    return trans_int
 
 def neutronint(cefion: CEFion, temperature: float, Q: tuple , scheme: str, Ei: float=1e+6):
     r"""
@@ -253,7 +232,7 @@ def susceptibility(cefion: CEFion, temperatures: list[float], Hfield_direction: 
     return susceptibility
         
         
-def thermodynamics(cefion, T):
+def thermodynamics(cefion: CEFion, T: list[float]):
     r"""
     Calculate the fundamental thermodynamic values as a function of temperature.
     

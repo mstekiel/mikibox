@@ -1,6 +1,9 @@
 import numpy as np
 import mikibox as ms
 
+from typing import Union
+
+
 import warnings
 warnings.filterwarnings("error")
 
@@ -29,12 +32,12 @@ class Lattice:
             (h,k,l) -> [kx,ky,kz]_{lab}
     '''
 
-    def __init__(self, lattice_parameters, orientation=None):
+    def __init__(self, lattice_parameters: list[float], orientation: tuple=None):
         '''
         Lattice parameters are: a,b,c,alpha,beta,gamma.
         
         Orientation: None, (hkl1, hkl2)
-            Sample orientation. 'None' initializes with identity matrix, pait of hkl's puts the first one along `x` and the second one in the `xy` plane.
+            Sample orientation. 'None' initializes with identity matrix, pair of hkl's puts the first one along `x` and the second one in the `xy` plane.
         '''
         self.lattice_parameters = lattice_parameters
         #self.G = self.metricTensor(a,b,c,alpha,beta,gamma)
@@ -53,7 +56,7 @@ class Lattice:
     def __str__(self):
         return str(self.lattice_parameters)
     
-    def constructA(self, lattice_parameters):
+    def constructA(self, lattice_parameters: list[float]) -> np.ndarray:
         # Construct the A lattice as crystal axes in orthonormal system, ie a||x, b in xy plane, c accordingly.
         a,b,c,alpha,beta,gamma = lattice_parameters
         
@@ -66,7 +69,7 @@ class Lattice:
         
         return np.array([[a,bx,cx],[0,by,cy],[0,0,cz]])
     
-    def constructB(self, lattice_parameters):
+    def constructB(self, lattice_parameters: list[float]) -> np.ndarray:
         # Construction based on the perpendicularity.
         A = self.constructA(lattice_parameters)
         B = np.linalg.inv(A)
@@ -89,7 +92,7 @@ class Lattice:
             
         return B
         
-    def constructU(self, orientation):
+    def constructU(self, orientation: Union[None, tuple, np.ndarray]) -> np.ndarray:
         '''
         Construct the orientation matrix U. Different schemes are allowed depending on the type of the `orientation` argument.
         
@@ -135,7 +138,7 @@ class Lattice:
 
         return U
         
-    def updateOrientation(self, orientation):
+    def updateOrientation(self, orientation: Union[None, tuple, np.ndarray]):
         '''
         Update the orientation matrix of the Lattice, together with the underlying UB matrix.
         
@@ -166,7 +169,7 @@ class Lattice:
         
         return
     
-    def hkl2Q(self, hkl):
+    def hkl2Q(self, hkl: Union[tuple, list]) -> Union[tuple, list]:
         '''
         Calculate the coordinates in the reciprocal space in the [kx,ky,kz] basis in :math:`1/\\A` units.
         
@@ -190,7 +193,7 @@ class Lattice:
         
         return out
         
-    def Q2hkl(self, Q):
+    def Q2hkl(self, Q: Union[tuple, list]) -> Union[tuple, list]:
         '''
         Calculate the Miller indices based on the reicprocal space coordinates.
         
@@ -214,7 +217,7 @@ class Lattice:
         
         return out
         
-    def scattering_angle(self, hkl, wavelength):
+    def scattering_angle(self, hkl: Union[tuple, list], wavelength: float) -> Union[tuple, list]:
         '''
         Calculate the scattering angle otherwise known as two-theta from the Miller indices.
         
@@ -248,7 +251,7 @@ class Lattice:
             
         return 2*theta
         
-    def is_in_scattering_plane(self, hkl):
+    def is_in_scattering_plane(self, hkl: tuple) -> bool:
         '''
         Test whether the given hkl is in the scattering plane i.e. `xy` plane.
         '''

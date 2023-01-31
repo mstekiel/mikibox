@@ -11,11 +11,11 @@ import mikibox as ms
 
 
 # Analysis of the crystal field effects in CePdAl3
-lattice = ms.Lattice(6.91,6.97,10.6,90,90,90)
+lattice = ms.crystallography.Lattice([6.91,6.97,10.6,90,90,90])
 
 calculateTTAS = False
-calculateTAS = True
-calculateTOF = False
+calculateTAS = False
+calculateTOF = True
 
 
 # Following calculation is to cross check the calculations for the orthorhombic case with Ce

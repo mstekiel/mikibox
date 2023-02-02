@@ -21,7 +21,7 @@ class PSI_ZEBRA(Beamline):
         self._nu_sense = 1
         self._nu_offset = 0
     
-    def integrate_dataset(self, DATA, normalize=True, scale=100, dir_cosines=False, silent=False):
+    def integrate_dataset(self, DATA: list, normalize: bool=True, scale: float=100, dir_cosines: bool=False, silent: bool=False) -> list:
         '''
         Integrate the dataset.
         
@@ -51,7 +51,7 @@ class PSI_ZEBRA(Beamline):
         return list_hkl
         
         
-    def get_refl(self, DATA, hkl):
+    def get_refl(self, DATA: list, hkl: tuple) -> list:
         '''
         Get the datablock corresponding to the reflection
         '''
@@ -65,7 +65,7 @@ class PSI_ZEBRA(Beamline):
             
         return datablock     
         
-    def load_ccl(self, filename, **kwargs):
+    def load_ccl(self, filename: str, **kwargs) -> tuple:
         '''
         Read the ccl file containing multiple scans of various reflections
         
@@ -148,7 +148,7 @@ class PSI_ZEBRA(Beamline):
         
         return HEADER, DATA
 
-    def load_dat(self, filename):
+    def load_dat(self, filename: str) -> tuple:
         '''
         Read the dat file containing a single scan.
         
@@ -201,7 +201,7 @@ class PSI_ZEBRA(Beamline):
                 
         return HEADER, DATA
         
-    def load(self,filename, extension=None):
+    def load(self,filename: str, extension: str=None) -> tuple:
         '''
         Wrapper for loading one of the two filetypes used at ZEBRA
         '''
@@ -225,7 +225,7 @@ class PSI_ZEBRA(Beamline):
             
         return HEADER, DATA
         
-    def convert_CCL2NICOS(self, filename, **kwargs):
+    def convert_CCL2NICOS(self, filename: str, **kwargs) -> list:
         '''
         Convert the packed ccl file with measured reflections to the NICOS dat format.
         

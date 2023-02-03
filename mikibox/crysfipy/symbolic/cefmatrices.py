@@ -10,12 +10,14 @@ Most important things so far:
  2. The CEF operators correspond to the Stevens notation.
 '''
 
-from numpy import diag, linspace, conj, transpose, sqrt, eye, dot
+import sympy
+from numpy import diag, linspace, conj, transpose, sqrt, eye, dot, array
 from numpy.linalg import matrix_power as mp
 
 
 def J_z(J,convention=1):
-    return diag(linspace(convention * J,convention * (-J),int(2*J+1)))
+	return diag([convention*sympy.Rational(2*(J-m),2) for m in range(2*J+1)])
+    # return diag(linspace(convention * J,convention * (-J),int(2*J+1)))
 
 def J_y(J,convention = 1):
 	return .5/1.j*(J_plus(J,convention) - J_minus(J,convention))
@@ -26,8 +28,11 @@ def J_x(J,convention = 1):
 
 
 def J_plus(J,convention = 1):
-	p1 = linspace(-J,J-1,int(2*J))
-	p1 = sqrt(J*(J+1) - p1*(p1+1))
+	p1 = [sympy.sqrt(J*(J+1) + sympy.Rational(2*(J-m),2)*(1-sympy.Rational(2*(J-m),2))) for m in range(2*J)]
+
+	# p1 = linspace(-J,J-1,int(2*J))
+	# p1 = sqrt(J*(J+1) - p1*(p1+1))
+
 	return diag(p1,convention)
 
 def J_minus(J,convention = 1):
@@ -167,3 +172,18 @@ def O_66(J,convention = 1):
 	return 0.5 * (mp(Jplus, 6) + mp(Jminus, 6))
 
 
+if __name__ == '__main__':
+	J = 2
+	JJ = J*(J+1)
+	J2p1 = int(2*J + 1)
+
+	Jz = J_z(J,1)
+	E = eye(J2p1)
+
+	O_60_test =  231 * mp(Jz, 6) + mp(Jz, 4) * (735 - 315 * JJ) + mp(Jz, 2)*(105*JJ**2 - 525*JJ + 294) + dot(E, -5*JJ**3 + 40 * JJ**2 - 60*JJ)
+
+	print(231 * mp(Jz, 6))
+	print(mp(Jz, 4) * (735 - 315 * JJ))
+	print(mp(Jz, 2)*(105*JJ**2 - 525*JJ + 294))
+	print(dot(E, -5*JJ**3 + 40 * JJ**2 - 60*JJ))
+	print(O_60_test)

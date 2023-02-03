@@ -11,12 +11,15 @@ B20, B22, B40, B42, B44, B60, B62, B64, B66 = sympy.symbols('B20, B22, B40, B42,
 # Symbolic analysis of the crystal field effects in CeAuAl3
 
 # Dont forget to edit these fields
-Jval = 2.5
+Jval = sympy.Rational(5,2)
 Jvalstr = f'{Jval:.1f}'.replace('.','p')
-filenameprefix = f'./Symbolic-output/J_{Jvalstr}_B20_B22_B40_B42_B44'
+filenameprefix = f'C:/Users/Stekiel/Documents/GitHub/mikibox/mikibox/crysfipy/symbolic/Symbolic-output/J_{Jvalstr}_B20_B22_B40_B42_B44'
 
-H = sympy.Matrix(   B20 * O_20(Jval) + B22 * O_22(Jval) + B40 * O_40(Jval) + \
-                    B42 * O_42(Jval) + B44 * O_44(Jval))
+print(J_plus(Jval))
+print(J_minus(Jval))
+
+H = sympy.Matrix(   B20 * O_20(Jval) + B22 * O_22(Jval) + B40 * O_40(Jval) + B42 * O_42(Jval) + B44 * O_44(Jval))
+print(H)
 
 diagonalize = True
 exportLatex = True
@@ -34,11 +37,9 @@ start_time = timer()
 if diagonalize:
     P, D = H.diagonalize()
 
-    eigenvalues = P
-    eigenvectors = D
-    
+    eigenvalues = D
+    eigenvectors = P
 
-    
     # print(D)
     # print()
     # print(P)
@@ -53,19 +54,19 @@ diag_str = f'Diagonalization time = {end_time-start_time} s'
 print(diag_str)
 
 
-latex_begin = '''\\documentclass[8pt]{report}
-\\usepackage[a4paper,margin=0.1in,landscape]{geometry}
-\\usepackage{amsmath}
+latex_begin = '''//documentclass[8pt]{report}
+//usepackage[a4paper,margin=0.1in,landscape]{geometry}
+//usepackage{amsmath}
 
-\\begin{document}
+//begin{document}
 
 '''
 latex_end = '''
-\\end{document}
+//end{document}
 '''
 
 def eq_wrapper(text):
-    return f'\\begin{{math}}\n{text}\n\\end{{math}}'
+    return f'//begin{{math}}\n{text}\n//end{{math}}'
 
 
 start_time = timer()

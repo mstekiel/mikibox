@@ -51,12 +51,12 @@ class PSI_ZEBRA(Beamline):
         return list_hkl
         
         
-    def get_refl(self, DATA: list, hkl: tuple) -> list:
+    def get_refl(self, DATA: list[dict], hkl: tuple) -> dict:
         '''
         Get the datablock corresponding to the reflection
         '''
         h,k,l= hkl
-        datablock = None
+        datablock = {}
         
         refl_id=-1
         for DATAblock in DATA:
@@ -201,13 +201,13 @@ class PSI_ZEBRA(Beamline):
                 
         return HEADER, DATA
         
-    def load(self,filename: str, extension: str=None) -> tuple:
+    def load(self,filename: str, extension: str='') -> tuple:
         '''
         Wrapper for loading one of the two filetypes used at ZEBRA
         '''
 
         # Figure out the format from file extension
-        if extension == None:
+        if extension == '':
             if filename[-3:] == 'ccl':
                 extension = 'ccl'
             elif filename[-3:] == 'dat':
@@ -231,6 +231,11 @@ class PSI_ZEBRA(Beamline):
         
         A Strange offset of omega=-135 deg. has to be applied in order to be read properly by davinci
         
+        Parameters:
+        -----------
+
+        kwargs:
+            Passed to `self.load_ccl`
         Returns:
             List of strings, where each element is a NICOS file
         '''
@@ -255,7 +260,9 @@ class PSI_ZEBRA(Beamline):
             UB = HEADER['UB'].replace('(','').replace(')','').replace(',','')
             UB = np.reshape(np.array(UB.split(),dtype=float), (3,3))
                     
-            lengths, angles = mscryst.lattice_pars_from_UB(UB)
+            a, b, c, alpha, beta, gamma = mscryst.lattice_pars_from_UB(UB)
+            lengths = [a,b,c]
+            angles = [alpha, beta, gamma]
             outlines.append('#%26s : %s A' % ('lattice (a,b,c))', lengths))
             outlines.append('#%26s : %s deg' % ('lattice (alp,bet,gam))', angles))
 
@@ -268,10 +275,10 @@ class PSI_ZEBRA(Beamline):
             outlines.append('#%26s : %s K' % ('Ts_value', DATA_block['temperature']))
             outlines.append('#%26s : %s T' % ('B_value', DATA_block['magnetic_field']))
             outlines.append('#%26s : %s A' % ('wavelength_value', HEADER['wavelength']))
-            outlines.append('#%26s : %s deg' % ('omega_value', self.omega_sense*DATA_block['om']+self.omega_offset))
-            outlines.append('#%26s : %s deg' % ('gamma_value', self.gamma_sense*DATA_block['tth']+self.gamma_offset))
+            outlines.append('#%26s : %s deg' % ('omega_value', self._omega_sense*DATA_block['om']+self._omega_offset))
+            outlines.append('#%26s : %s deg' % ('gamma_value', self._gamma_sense*DATA_block['tth']+self._gamma_offset))
             outlines.append('#%26s : %s deg' % ('chi1_value', '0.00'))
-            outlines.append('#%26s : %s deg' % ('liftingctr_value', self.nu_sense*DATA_block['nu']+self.nu_offset))
+            outlines.append('#%26s : %s deg' % ('liftingctr_value', self._nu_sense*DATA_block['nu']+self._nu_offset))
 
             outlines.append('### Scan data')
             outlines.append('# %6s %8s %8s' % ('omega', 'ctr1', 'mon1'))
@@ -279,7 +286,7 @@ class PSI_ZEBRA(Beamline):
             
             om, cts, monitor = [DATA_block[key] for key in ['x','counts','monitor']]
             for om_it, cts_it in zip(om, cts):
-                outlines.append('%8.2f %8d %8d' % (self.omega_sense*om_it+self.omega_offset, cts_it, monitor))
+                outlines.append('%8.2f %8d %8d' % (self._omega_sense*om_it+self._omega_offset, cts_it, monitor))
 
             outlines.append('### End of NICOS data file')
             
@@ -288,3 +295,60 @@ class PSI_ZEBRA(Beamline):
             #print(self.calHKL(UB,HEADER['wavelength'],DATA_block['om'],DATA_block['tth'],DATA_block['nu']))
 
         return outfiles
+
+    def convert_DAT2NICOS(self, filename: str, **kwargs) -> list:
+        '''
+        Native ZEBRA dat format is strange, because the data have different shape for omega scans and q-scans.
+        '''
+        
+        HEADER, DATA = self.load_dat(filename, **kwargs)
+
+
+        outlines = []
+
+        # outlines.append('### NICOS data file. Created at %s' % (tt.strftime('%Y-%m-%d %H:%M:%S',tt.localtime())))
+
+        # # Write up the header
+        # outlines.append('### Header copied from the main header of the ZEBRA CCL file')
+        # for key in HEADER:
+        #     outlines.append('#%26s : %s' % (key, HEADER[key]))
+
+        # # Some other interesting values derived from the header
+        # outlines.append('### Interesting values, derived from the header')
+    
+        # UB = HEADER['UB'].replace('(','').replace(')','').replace(',','')
+        # UB = np.reshape(np.array(UB.split(),dtype=float), (3,3))
+                
+        # lengths, angles = mscryst.lattice_pars_from_UB(UB)
+        # outlines.append('#%26s : %s A' % ('lattice (a,b,c))', lengths))
+        # outlines.append('#%26s : %s deg' % ('lattice (alp,bet,gam))', angles))
+
+        # # Some header names need to be added to be readable by Davinci
+        # outlines.append('### Davinci readable values')
+        
+        # outlines.append('#%26s : %s' % ('Sample_ubmatrix', str(UB).replace('\n',' , ')))
+        # #outlines.append('#%26s : %s deg' % ('sth_value', self.omega_sense*DATA_block['om']+self.omega_offset))
+        # outlines.append('#%26s : %s deg' % ('chi2_value', '0.00'))
+        # outlines.append('#%26s : %s K' % ('Ts_value', HEADER['temperature']))
+        # outlines.append('#%26s : %s T' % ('B_value', HEADER['magnetic_field']))
+        # outlines.append('#%26s : %s A' % ('wavelength_value', HEADER['wavelength']))
+        # outlines.append('#%26s : %s deg' % ('omega_value', self.omega_sense*DATA_block['om']+self.omega_offset))
+        # outlines.append('#%26s : %s deg' % ('gamma_value', self.gamma_sense*DATA_block['tth']+self.gamma_offset))
+        # outlines.append('#%26s : %s deg' % ('chi1_value', '0.00'))
+        # outlines.append('#%26s : %s deg' % ('liftingctr_value', self.nu_sense*DATA_block['nu']+self.nu_offset))
+
+        # outlines.append('### Scan data')
+        # outlines.append('# %6s %8s %8s' % ('omega', 'ctr1', 'mon1'))
+        # outlines.append('# %6s %8s %8s' % ('deg', 'cts', 'cts'))
+        
+        # om, cts, monitor = [DATA_block[key] for key in ['x','counts','monitor']]
+        # for om_it, cts_it in zip(om, cts):
+        #     outlines.append('%8.2f %8d %8d' % (self.omega_sense*om_it+self.omega_offset, cts_it, monitor))
+
+        # outlines.append('### End of NICOS data file')
+        
+        # outfiles.append(outlines)
+            
+            #print(self.calHKL(UB,HEADER['wavelength'],DATA_block['om'],DATA_block['tth'],DATA_block['nu']))
+
+        return outlines

@@ -83,7 +83,7 @@ class ILL_D23(Beamline):
         
         return outlines
 
-    def check_pipes_obstruction(oS:float, oE:float, gamma: float) -> tuple(str, str):
+    def check_pipes_obstruction(oS: float, oE: float, gamma: float) -> tuple:
         '''
         check_pipes_obstruction(oS, oE, gamma)
         [oS, oE] : range of the omega scan

@@ -20,7 +20,7 @@ def J_z(J,convention=1):
     # return diag(linspace(convention * J,convention * (-J),int(2*J+1)))
 
 def J_y(J,convention = 1):
-	return .5/1.j*(J_plus(J,convention) - J_minus(J,convention))
+	return sympy.Rational(1,2) * 1j *(J_plus(J,convention) - J_minus(J,convention))
 
 def J_x(J,convention = 1):
 	return .5 * (J_plus(J,convention) + J_minus(J,convention))

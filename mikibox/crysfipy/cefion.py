@@ -133,7 +133,7 @@ class CEFion:
         if sortWithE:
             sortedIndices = self.energies.argsort()
         else:
-            sortedIndices = np.range(Jval)
+            sortedIndices = np.arange(self.Jval)
             
 
         self.eigenvectors = self.eigenvectors[:,sortedIndices]

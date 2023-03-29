@@ -13,7 +13,7 @@ def gauss_bkg(x,x0,A,sigma,bkg):
     
 def lorentz_bkg(x,x0,A,gamma,bkg):
     '''
-    Gaussian with constant background.
+    Lorentzian with constant background.
     
     :math:`f(x) = \\frac{A}{(1+(x-x_0)^2/\\gamma^2))} + bkg`
     
@@ -30,9 +30,9 @@ def pseudoVoigt_bkg(x,x0,I,f,eta,bkg):
 
 def gauss_satellites_bkg(x,x0,xs,As,sigmas,bkg):
     '''
-    Gaussian with constant background.
+    Gaussian satellites
     
-    :math:`f(x) = A exp(-(x-x_0)^2/(2 \\sigma^2)) + bkg`
+    :math:`f(x) = A ( exp(-(x-x_0-x_s)^2/(2 \\sigma^2)) + exp(-(x-x_0+x_s)^2/(2 \\sigma^2)) ) + bkg`
     
     To convert to intensity of the peak :math:`I = \\sqrt{2 \\pi} A \\sigma`
     '''

@@ -26,11 +26,6 @@ class CEFion:
     Examples:
         
         TODO
-        ce = CEFion("Ce", [0,0,0], ["T", 10])
-        print(ce)
-        Energy levels:
-        E(0) =	0.0000	 2fold-degenerated
-        E(1) =	3600.0000	 4fold-degenerated
         
     Attributes:
         ion : ``crysfipy:ion``
@@ -107,7 +102,7 @@ class CEFion:
         if (diagonalize):
             self.diagonalize()
     
-    def diagonalize(self, sortWithE=True, shiftToZero=True):
+    def diagonalize(self, sortWithE: bool=True, shiftToZero: bool=True):
         """
         Diagonalize the Hamiltonian, and change to the sorted eigenvector base. The default sorting is done according to eigenenergies, so that the first vector [1,0,...,0] is the lowest eigenstate, and the last one [0,...,0,1] is the highest one. Changing the base greatly faiclitates further calculations based on the evaluation of matrix elements.
         
@@ -168,7 +163,7 @@ class CEFion:
 
         self.degeneracies = np.array(deg_e)   
         
-    def __str__(self, precision=4):
+    def __str__(self, precision: float=4):
         """
         Nice printout of calculated parameters
         

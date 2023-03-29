@@ -21,7 +21,7 @@ class ILL_D23(Beamline):
         self.nu_sense = 1
         self.nu_offset = 0
         
-    def convert_d23_to_nicos(filename):
+    def convert_d23_to_nicos(self, filename: str) -> list[str]:
         '''
         convert_d23_to_nicos(filename)
         Script to convert the D23 format to NICOS dat format, with some tweaks, so that it can be read by Davinci.
@@ -35,7 +35,7 @@ class ILL_D23(Beamline):
         
         outlines = []
 
-        data, header = load_d23(filename)
+        data, header = self.load_d23(filename)
 
         outlines.append('### NICOS data file. Created at %s' % (tt.strftime('%Y-%m-%d %H:%M:%S',tt.localtime())))
 
@@ -47,8 +47,8 @@ class ILL_D23(Beamline):
         # Some other interesting values derived from D23 header
         outlines.append('### Interesting values, derived from D23 header')
 
-        UB = getUB(filename)
-        lengths, angles = lattice_pars_from_UB(UB)
+        UB = self.getUB(filename)
+        lengths, angles = self.lattice_pars_from_UB(UB)
         outlines.append('#%26s : %s A' % ('lattice (a,b,c))', lengths))
         outlines.append('#%26s : %s deg' % ('lattice (alp,bet,gam))', angles))
 
@@ -66,7 +66,7 @@ class ILL_D23(Beamline):
         outlines.append('#%26s : %s deg' % ('liftingctr_value', header['chi']))
 
         # Soft pipes warning
-        kf_check, ki_check = check_pipes_obstruction(header['scan start'], header['scan start']+header['scan width'], header['2theta (gamma)'])
+        kf_check, ki_check = self.check_pipes_obstruction(header['scan start'], header['scan start']+header['scan width'], header['2theta (gamma)'])
 
         outlines.append('### Magnet pipes check')
         outlines.append('#%26s : %s' % ('Incoming beam obstructed', ki_check))
@@ -83,7 +83,7 @@ class ILL_D23(Beamline):
         
         return outlines
 
-    def check_pipes_obstruction(oS, oE, gamma):
+    def check_pipes_obstruction(oS: float, oE: float, gamma: float) -> tuple:
         '''
         check_pipes_obstruction(oS, oE, gamma)
         [oS, oE] : range of the omega scan
@@ -98,7 +98,7 @@ class ILL_D23(Beamline):
         go = np.sort([gamma-oS, gamma-oE])
 
         if oS<-180 or oS>180 or oE<-180 or oE>180:
-            raise ValueError('Omega values dont make sense while chaking obstruction of the incoming beam')
+            raise ValueError('Omega values dont make sense while checking obstruction of the incoming beam')
 
         scattered_check = (-1, '')
         incoming_check = (-1, '')
@@ -117,7 +117,7 @@ class ILL_D23(Beamline):
 
         return scattered_check, incoming_check
 
-    def load_nicos(filename):
+    def load_nicos(filename: str) -> tuple:
         '''
         Load datafile of an omega scan from the NICOS dat file format
         '''
@@ -142,10 +142,10 @@ class ILL_D23(Beamline):
 
         return np.array(DATA), HEADER
 
-    def gauss(x,a,x0,sigma,bkg):
+    def gauss(self, x,a,x0,sigma,bkg):
         return a*np.exp(-(x-x0)**2/(2*sigma**2))+bkg
 
-    def fit_gauss(x,y,puser=False):
+    def fit_gauss(self, x: list, y: list, puser: list=False) -> tuple:
         if puser:
             p0 = puser
         else:
@@ -156,26 +156,26 @@ class ILL_D23(Beamline):
             p0 = [max(y)-bkg,x0,sigma,bkg]
 
         try:
-            popt,pcov = curve_fit(gauss,x,y,p0=p0,maxfev=200)
+            popt,pcov = curve_fit(self.gauss,x,y,p0=p0,maxfev=200)
         except RuntimeError:
             popt = np.zeros(4)
             pcov = np.zeros((4,4))
 
         return popt, pcov
 
-    def check_scantime(filename):
+    def check_scantime(filename: str) -> str:
         with open(filename) as ff:
             lines = ff.readlines()
         
         return lines[5].split()[-1]
 
-    def check_scantype(filename):
+    def check_scantype(filename: str) -> str:
         with open(filename) as ff:
             lines = ff.readlines()
 
         return lines[9].split()[-1]
         
-    def getUB(filename):
+    def getUB(self, filename: str) -> np.ndarray:
         '''
         Read the UB matrix directly from the raw data file, without caring about anything else
         '''
@@ -194,7 +194,7 @@ class ILL_D23(Beamline):
         
         return np.array([[u11,u12,u13],[u21,u22,u23],[u31,u32,u33]])
 
-    def lattice_pars_from_UB(UB):
+    def lattice_pars_from_UB(self, UB: np.ndarray) -> tuple:
         U, B = np.linalg.qr(UB)
 
         a1,a2,a3 = np.linalg.inv(B)
@@ -209,7 +209,7 @@ class ILL_D23(Beamline):
 
         return ((a,b,c), (alp,bet,gam))
         
-    def load_d23(filename):
+    def load_d23(self, filename: str) -> tuple:
         # Read omega scan from native D23 raw format
         
         DATA = []

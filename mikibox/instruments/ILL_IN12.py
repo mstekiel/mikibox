@@ -5,7 +5,7 @@ from collections import OrderedDict
 
 from . import Beamline
 
-class ILL_D23(Beamline):
+class ILL_IN12(Beamline):
     '''
     IN12 @ ILL
     Threeaxis spectrometer

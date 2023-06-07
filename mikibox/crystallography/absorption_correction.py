@@ -335,8 +335,20 @@ class AbsorptionCorrection():
 
     def plot_beam_paths_grid(self, ax: Any, hkl: tuple, wavelength: float, grid: tuple, plotting_kwargs: dict=dict()) -> None:
         '''
-        Inspection tool to plot the sample, its orientation and the incoming, scattered beam 
+        Inspection tool to plot the sample, its orientation, the incoming, scattered beam 
         and the chosen hkl.
+
+        plotting_kwargs:
+            silent: bool=True
+                Print messages.
+            show_sample_dim_ref: bool=False
+                Show dark gray arrows indicating principal axes of the sample.
+            show_grid_ki: bool=False
+                Show paths of the incoming beam within the sample for each considered sample element.
+            show_grid_kf: bool=False
+                Show paths of the scatteres beam within the sample for each considered sample element.
+
+
         '''
         # First deal with the plot specifications
         silent = plotting_kwargs.setdefault('silent', True)
@@ -366,7 +378,7 @@ class AbsorptionCorrection():
             ax.arrow(x=0,y=0,dx=n1_rot[0],dy=n1_rot[1], color='tab:gray', **arrow_styles)
             ax.arrow(x=0,y=0,dx=n2_rot[0],dy=n2_rot[1], color='tab:gray', **arrow_styles)
 
-        l_ki, l_kf = self.central_paths(hkl, wavelength)
+        # l_ki, l_kf = self.central_paths(hkl, wavelength)
         
         rectangle_shift = np.dot(ms.Rz(psi), [d1/2, d2/2, 0])
         sample = mpl.patches.Rectangle(xy=(-rectangle_shift[0], -rectangle_shift[1]), width=d1, height=d2, angle=np.degrees(psi), **sample_style)
@@ -384,6 +396,10 @@ class AbsorptionCorrection():
                 l_ki = self.rectangle_element_radius(self.sample_dimensions, (dx, dy), psi)
                 l_kf = self.rectangle_element_radius(self.sample_dimensions, (dx, dy), psi_kf)
                 d_rot = np.dot(ms.Rz(psi), [dx,dy,0])
+
+                # l_ki_average += l_ki/Ntot
+                # l_kf_average += l_kf/Ntot
+                # abs_ki_average += np.exp(-l_ki/self.)
 
                 ax.scatter(d_rot[0], d_rot[1], color='tab:red', s=0.5)
 

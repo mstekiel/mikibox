@@ -32,7 +32,7 @@ class Lattice:
             (h,k,l) -> [kx,ky,kz]_{lab}
     '''
 
-    def __init__(self, lattice_parameters: list[float], orientation: tuple=None):
+    def __init__(self, lattice_parameters: list[float], orientation: Union[None, tuple, np.ndarray]=None):
         '''
         Lattice parameters are: a,b,c,alpha,beta,gamma.
         
@@ -169,7 +169,7 @@ class Lattice:
         
         return
     
-    def hkl2Q(self, hkl: Union[tuple, list]) -> Union[tuple, list]:
+    def hkl2Q(self, hkl: Union[tuple, list]) -> Union[tuple[float, float, float], list]:
         '''
         Calculate the coordinates in the reciprocal space in the [kx,ky,kz] basis in :math:`1/\\A` units.
         
@@ -181,13 +181,13 @@ class Lattice:
             Vector in reciprocal space or list of vectors in reciprocal space.
         '''
         
-        hkl = np.array(hkl)
+        _hkl = np.array(hkl)
         
         # hkl is a single vector
-        if hkl.shape == (3,):
-            out = np.dot(self.UB, hkl)
-        elif hkl.shape[1] == 3:
-            out = np.einsum('kj,ij', self.UB, hkl)
+        if _hkl.shape == (3,):
+            out = np.dot(self.UB, _hkl)
+        elif _hkl.shape[1] == 3:
+            out = np.einsum('kj,ij', self.UB, _hkl)
         else:
             raise IndexError('Incompatible dimension of the hkl array. Should be (3,) or (N,3).')
         
@@ -199,19 +199,19 @@ class Lattice:
         
         Parameters:
             Q : array_like
-                Resiprocal space coordinates or list of thereof.
+                Reciprocal space coordinates or list of thereof.
                 
         Returns: ndarray
             Miller indices or list of Miller indices.
         '''
         
-        Q = np.array(Q)
+        _Q = np.array(Q)
         
         # Q is a single vector
-        if Q.shape == (3,):
-            out = np.dot(np.linalg.inv(self.UB), Q)
-        elif Q.shape[1] == 3:
-            out = np.einsum('kj,ij', np.linalg.inv(self.UB), Q)
+        if _Q.shape == (3,):
+            out = np.dot(np.linalg.inv(self.UB), _Q)
+        elif _Q.shape[1] == 3:
+            out = np.einsum('kj,ij', np.linalg.inv(self.UB), _Q)
         else:
             raise IndexError('Incompatible dimension of the Q array. Should be (3,) or (N,3).')
         
@@ -231,14 +231,14 @@ class Lattice:
             Scattering angle or a list of scattering angles.
         '''
         
-        hkl = np.array(hkl)
+        _hkl = np.array(hkl)
 
         # hkl is a single vector
-        if hkl.shape == (3,):
-            Q = np.dot(self.B, hkl)
+        if _hkl.shape == (3,):
+            Q = np.dot(self.B, _hkl)
             Q_lengths = np.linalg.norm(Q)
-        elif hkl.shape[1] == 3:
-            Q = np.einsum('kj,ij', self.B, hkl)
+        elif _hkl.shape[1] == 3:
+            Q = np.einsum('kj,ij', self.B, _hkl)
             Q_lengths = np.linalg.norm(Q, axis=1)
         else:
             raise IndexError('Incompatible dimension of the Q array. Should be (3,) or (N,3).')

@@ -5,6 +5,7 @@ from . import CEFpars, Ion
 from .cefmatrices import *
 
 import numpy as np
+from scipy.linalg import schur
 # from numpy import conj, transpose, dot, diag
 # import numbers
 
@@ -52,7 +53,7 @@ class CEFion:
             List of kets corresponding to the J basis of the free ion problem.
     '''
 
-    def __init__(self, ion: Ion, Hfield: tuple, cfp: CEFpars, diagonalize: bool=True):
+    def __init__(self, ion: Ion, Hfield: tuple[float, float, float], cfp: CEFpars, diagonalize: bool=True):
         self.ion = ion
         self.Jval = self.ion.J
         Jval = self.Jval
@@ -118,8 +119,10 @@ class CEFion:
         """
     
         # Diagonalize the Hamiltonian
-        E, U = np.linalg.eig(self.hamiltonian);
-        
+        # Other functions than scipy.linalg.schur do not produce perpendicular subspaces for degenerated eigenvalues
+        E, U = schur(self.hamiltonian)
+        E = np.diag(E)
+
         if sum(np.iscomplex(E)) > 0:
             raise ValueError('Final energies are complex!')
         

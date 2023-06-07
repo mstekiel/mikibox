@@ -7,7 +7,8 @@ def gauss_bkg(x,x0,A,sigma,bkg):
     
     :math:`f(x) = A exp(-(x-x_0)^2/(2 \\sigma^2)) + bkg`
     
-    To convert to intensity of the peak :math:`I = \\sqrt{2 \\pi} A \\sigma`
+    To convert to intensity :math:`I = \\sqrt{2 \\pi} A \\sigma`
+    To convert to FWHM :math:`FWHM = 2\\sqrt{2 \\ln 2} \\sigma \\approx 2.355 \\sigma`
     '''
     return A*np.exp(-(x-x0)**2/(2*sigma**2)) + bkg
     

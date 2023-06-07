@@ -5,7 +5,7 @@ from .cefion import CEFion
 import numpy as np
     
 
-def boltzman_population(energies: list[float], temperature: float) -> list[float]:
+def boltzman_population(energies: np.ndarray, temperature: float) -> np.ndarray:
     r'''
     Calculate the population of energy levels at given temperature based on the Boltzmann statistic.
     :math:`p_i = \frac{1}{Z} e^{-E_i/k_B T}`
@@ -26,7 +26,7 @@ def boltzman_population(energies: list[float], temperature: float) -> list[float
     return p / Z
 
 
-def neutronint(cefion: CEFion, temperature: float, Q: tuple , scheme: str, Ei: float=1e+6):
+def neutronint(cefion: CEFion, temperature: float, Q: tuple[float, float, float] , scheme: str, Ei: float=1e+6) -> tuple[np.ndarray, np.ndarray]:
     r"""
     Returns matrix of energies and inelastic neutron scattering spectral weights for all possible transitions at given temperature.
     
@@ -83,9 +83,8 @@ def neutronint(cefion: CEFion, temperature: float, Q: tuple , scheme: str, Ei: f
     
     # Calculate the |<\Gamma_f|J_\perp|\Gamma_i>|^2 matrix
     if scheme=='single-crystal':
-        Q = np.array(Q).flatten()
         if Q.shape[0] != 3:
-            raise ValueError('Dimension of the``Q`` vector is not 3')
+            raise ValueError('Dimension of the `Q` vector is not 3')
             
         # First implementation does not seem to work well
         # Qperp_projectCEFion = ms.perp_matrix(Q)
@@ -139,7 +138,7 @@ def magnetization(cefion: CEFion, temperature: float, Hfield: tuple[float,float,
     return M
 
 
-def susceptibility(cefion: CEFion, temperatures: list[float], Hfield_direction: tuple[float,float,float], method: str='perturbation') -> list[float]:
+def susceptibility(cefion: CEFion, temperatures: np.ndarray, Hfield_direction: tuple[float,float,float], method: str='perturbation') -> np.ndarray:
     r"""
     Calculate the magnetic susceptibility at listed temperatures, based on one of the implemented methods.
     
@@ -232,7 +231,7 @@ def susceptibility(cefion: CEFion, temperatures: list[float], Hfield_direction: 
     return susceptibility
         
         
-def thermodynamics(cefion: CEFion, T: list[float]):
+def thermodynamics(cefion: CEFion, T: np.ndarray):
     r"""
     Calculate the fundamental thermodynamic values as a function of temperature.
     

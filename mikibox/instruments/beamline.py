@@ -34,9 +34,9 @@ class Beamline():
         U matrix convention: orthonormal matrix rotating crystal axes to experimental coordinate system.
         B matrix convention: upper triangle with crystal axes coordinate system in reciprocal space, with a*=1/a lengths
         '''
-        omega = np.radians(self.omega_sense*omega + self.omega_offset)
-        gamma = np.radians(self.gamma_sense*gamma + self.gamma_offset)
-        nu = np.radians(self.nu_sense*nu + self.nu_offset)
+        omega = np.radians(self._omega_sense*omega + self._omega_offset)
+        gamma = np.radians(self._gamma_sense*gamma + self._gamma_offset)
+        nu = np.radians(self._nu_sense*nu + self._nu_offset)
 
         co, so = np.cos(omega), np.sin(omega)
         R = [[co, -so, 0],[so,co,0],[0,0,1]]

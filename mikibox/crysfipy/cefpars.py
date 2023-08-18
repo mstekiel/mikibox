@@ -93,26 +93,29 @@ class CEFpars:
         for it,Bval in enumerate(Bvalues):
             self.B_values[it] = Bval*unitConversions[units]
                 
-        # In case of cubic symmetry the Bpars are given in form B40, B60, B66
+        # In case of cubic symmetry the Bpars are given in from B40, B60, B66
         # and some additional symmetry constraints are implemented
+        # The prefactors from Martin's table have additional factor of 1/2, 
+        # which is not right with crysfipy ( it does not reproduce doublet-quartet scheme).
+        # Hopefully it's an implementation problem only.
         if self.lattice == 'cubic':
             # Althoguh the the cubic symmetry helps in reducing number of parameters it does not with implementation...
             B40 = self.B_values[0]
             B60 = self.B_values[1]
-            B66o4 = self.B_values[2]
+            B66 = self.B_values[2]
             
             if pointGroupName in ['T','Th']:
                 self.B_values[0] = B40
-                self.B_values[1] = 5/2*B40
+                self.B_values[1] = 5*B40
                 self.B_values[2] = B60
-                self.B_values[3] = -B66o4
-                self.B_values[4] = -21/2*B60
-                self.B_values[5] = B66o4
+                self.B_values[3] = -B66
+                self.B_values[4] = -21*B60
+                self.B_values[5] = B66
             elif pointGroupName in ['Td','O','Oh']:
                 self.B_values[0] = B40
-                self.B_values[1] = 5/2*B40
+                self.B_values[1] = 5*B40
                 self.B_values[2] = B60
-                self.B_values[3] = -21/2*B60
+                self.B_values[3] = -21*B60
 
             
     def __str__(self):

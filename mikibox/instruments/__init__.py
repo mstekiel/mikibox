@@ -8,3 +8,5 @@ from .beamline import Beamline
 
 from .ILL_D23 import ILL_D23
 from .PSI_ZEBRA import PSI_ZEBRA
+from .MLZ_HEIDI import MLZ_HEIDI
+from .HFIR_HB3 import HFIR_HB3

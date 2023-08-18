@@ -83,7 +83,7 @@ class ILL_D23(Beamline):
         
         return outlines
 
-    def check_pipes_obstruction(oS: float, oE: float, gamma: float) -> tuple:
+    def check_pipes_obstruction(self, oS: float, oE: float, gamma: float) -> tuple:
         '''
         check_pipes_obstruction(oS, oE, gamma)
         [oS, oE] : range of the omega scan
@@ -117,7 +117,7 @@ class ILL_D23(Beamline):
 
         return scattered_check, incoming_check
 
-    def load_nicos(filename: str) -> tuple:
+    def load_nicos(self, filename: str) -> tuple:
         '''
         Load datafile of an omega scan from the NICOS dat file format
         '''
@@ -145,15 +145,15 @@ class ILL_D23(Beamline):
     def gauss(self, x,a,x0,sigma,bkg):
         return a*np.exp(-(x-x0)**2/(2*sigma**2))+bkg
 
-    def fit_gauss(self, x: list, y: list, puser: list=False) -> tuple:
-        if puser:
+    def fit_gauss(self, x: list, y: list, puser: list=[]) -> tuple:
+        if len(puser)==4:
             p0 = puser
         else:
             x0 = x[np.argmax(y)]
             sigma = np.abs(x[0]-x[-1])/10
             bkg = y[0]
             
-            p0 = [max(y)-bkg,x0,sigma,bkg]
+            p0 = [max(y)-bkg, x0, sigma, bkg]
 
         try:
             popt,pcov = curve_fit(self.gauss,x,y,p0=p0,maxfev=200)
@@ -163,13 +163,13 @@ class ILL_D23(Beamline):
 
         return popt, pcov
 
-    def check_scantime(filename: str) -> str:
+    def check_scantime(self, filename: str) -> str:
         with open(filename) as ff:
             lines = ff.readlines()
         
         return lines[5].split()[-1]
 
-    def check_scantype(filename: str) -> str:
+    def check_scantype(self, filename: str) -> str:
         with open(filename) as ff:
             lines = ff.readlines()
 
@@ -209,7 +209,7 @@ class ILL_D23(Beamline):
 
         return ((a,b,c), (alp,bet,gam))
         
-    def load_d23(self, filename: str) -> tuple:
+    def load_d23(self, filename: str) -> tuple[np.ndarray, dict[str, float]]:
         # Read omega scan from native D23 raw format
         
         DATA = []
@@ -241,7 +241,7 @@ class ILL_D23(Beamline):
             DATA = np.append(DATA, [float(n) for n in line.split()])
 
         try:
-            DATA=DATA.reshape((int(nentries/ncols),ncols))
+            DATA = np.reshape(DATA, (int(nentries/ncols),ncols))
         except BaseException:
             raise ValueError('FILE:',filename,'  Couldnt reshape DATA array to shape given in the header')
 

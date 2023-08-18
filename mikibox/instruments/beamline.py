@@ -96,3 +96,10 @@ class Beamline():
         
         
         return I_integrated, popt
+
+    def scan_time(self, x_start: float, x_end: float, x_step: float, t_per_point: float) -> float:
+        '''
+        Calculate the time needed to perform a scan from x_start to x_ens with the step
+        x_step and time per point t_per_point. 'x' can be any variable.
+        '''
+        return (np.abs(x_end-x_start)/x_step + 1)*t_per_point

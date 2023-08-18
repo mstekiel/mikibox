@@ -3,6 +3,7 @@
 # Library containing various tools I've been using for data analysis
 
 from .functions import *
+from .physics import *
 from . import crystallography
 from . import crysfipy
 from . import instruments

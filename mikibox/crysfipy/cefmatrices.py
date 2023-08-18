@@ -16,7 +16,7 @@ def J_z(J):
     return diag(linspace(J,-J,int(2*J+1)))
 
 def J_y(J):
-	return .5/1.j*(J_plus(J) - J_minus(J))
+	return -.5j * (J_plus(J) - J_minus(J))
 
 def J_x(J):
 	return .5 * (J_plus(J) + J_minus(J))

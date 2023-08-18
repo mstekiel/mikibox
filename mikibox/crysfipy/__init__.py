@@ -1,3 +1,14 @@
+__version__ = '1.1'
+
+# Import main classes
+from .ion import Ion
+from .cefpars import CEFpars
+from .cefion import CEFion
+
+# Import the functions
+from .cefmatrices import *
+from .observables import *
+
 # Original copyright:
 
 # Copyright 2014-2018 Petr Čermák, Jan Zubáč and Karel Pajskr
@@ -15,14 +26,3 @@
 
 # I have done major reworking of the package to make it usable for my own purposes.
 # Michal Stekiel
-
-__version__ = '1.1'
-
-# Import main classes
-from .ion import Ion
-from .cefpars import CEFpars
-from .cefion import CEFion
-
-# Import the functions
-from .cefmatrices import *
-from .observables import *

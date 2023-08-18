@@ -1,5 +1,6 @@
 import numpy as np
-from pprint import pprint
+
+from typing import List
 
 class Ion:
     r"""
@@ -81,33 +82,33 @@ class Ion:
     def __str__(self):
         return "%s: J = %d, gJ = %.2f" % (self.name.title(), self.J, self.gJ)
         
-    def _LandeGFactor(self,S: float,L: int):
+    def _LandeGFactor(self, S: float,L: int) -> float:
         # Maybe for the future implementation, when the initialization will be done with S and L not with J
         return 1.5 + (S*(S+1) - L*(L+1))/(2*self.J*(self.J+1))
         
-    def _m_in_vacuum(self):
+    def _m_in_vacuum(self) -> float:
         # Calculate magnetic moment of an isolated ion in the units of Bohr magnetons.
         return self.gJ*np.abs(self.J)
 
-    def _m_dynamic(self):
+    def _m_dynamic(self) -> float:
         # Calculate magnetic moment of an isolated ion when calculating susceptibility.
         return self.gJ*np.abs(self.J*(self.J+1))
         
-    def mff(self,Q: list[float]):
+    def mff(self,Q: List[float]) -> np.ndarray:
         '''
         Calculate the magnetic form factor at given momentum transfer Q. From dipole approximation (small Q):
-        | :math:`f_m(Q) = j_0(Q) + \\frac{2-g_L}{g_L} j_2(Q)`
+        | :math:`f_m(Q) = j_0(Q) + \\frac{2-g_J}{g_J} j_2(Q)`
         
-        Functions :math:`j_L` are tabulated internally, :math:`g_L` is the Lande factor.
+        Functions :math:`j_n` are tabulated internally, :math:`g_J` is the Lande factor.
         
         Parameters:
-            Q : array_like
+            Q
                 List of the selected Q values. Note, Q is not a vector in reciprocal space, but its magnitude.
         
         Returns:
             Array of calculated values
         '''
-        s = Q/(4*np.pi)
+        s = np.divide(Q, 4*np.pi)
         coefs0 = self.mffCoefficients['j0']
         coefs2 = self.mffCoefficients['j2']
         
@@ -120,7 +121,7 @@ class Ion:
         return j0 + j2*(2-self.gJ)/self.gJ
 
 
-def _composeTables(filename: str):
+def _composeTables(filename: str) -> str:
     '''
     Internal function that makes the tables of elements with principal values required for calculations. It is not well implemented, but it works and makes things easy.
     '''

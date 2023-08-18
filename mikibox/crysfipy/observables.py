@@ -115,7 +115,7 @@ def neutronint(cefion: CEFion, temperature: float, Q: tuple[float, float, float]
     return (Denergies[sorting], Sqw.flatten()[sorting])
 
 
-def magnetization(cefion: CEFion, temperature: float, Hfield: tuple[float,float,float]):
+def magnetization(cefion: CEFion, temperature: float, Hfield: tuple[float,float,float]) -> tuple[float, float, float]:
     r'''
     Calculate the magnetization of the single ion in the crystal field.
     Returned value is in :math:`\mu_B` units.
@@ -133,9 +133,10 @@ def magnetization(cefion: CEFion, temperature: float, Hfield: tuple[float,float,
 
     # The diagonalized Hamiltonians' operators are already transformed into the sorted eigenvector base
     p = boltzman_population(cefion_inH.energies, temperature)
-    M = cefion_inH.ion.gJ * np.abs( np.einsum('ijj,j', cefion_inH.J, p) )
+    # M = cefion_inH.ion.gJ * np.abs( np.einsum('ijj,j', cefion_inH.J, p) )
+    M = np.einsum('ij,i', cefion_inH.moment, p)
     
-    return M
+    return tuple(M)
 
 
 def susceptibility(cefion: CEFion, temperatures: np.ndarray, Hfield_direction: tuple[float,float,float], method: str='perturbation') -> np.ndarray:

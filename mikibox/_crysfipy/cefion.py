@@ -99,8 +99,8 @@ class CEFion:
         # self.hamiltonian = (H + H.conj())/2
 
         # Uncomputed, empty fields
-        self.eigenvectors = None
-        self.energies = None
+        self.eigenvectors = []
+        self.energies = []
         
         # Diagonalize the Hamiltonian
         if (diagonalize):
@@ -214,7 +214,7 @@ class CEFion:
             precision : int, optional
                 How many significant digits should be shown for printout of energy and eigenvector coefficients.
         """
-        if not (self.eigenvectors and self.energies):
+        if not len(self.energies):
             return "Undiagonalized Hamiltonian"
 
         ret = ""

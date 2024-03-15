@@ -26,19 +26,19 @@ def boltzman_population(energies: np.ndarray, temperature: float) -> np.ndarray:
     return p / Z
 
 
-def neutronint(cefion: CEFion, temperature: float, Q: tuple[float, float, float] , scheme: str, Ei: float=1e+6) -> tuple[np.ndarray, np.ndarray]:
+def neutronint(cefion: CEFion, temperature: float, Q: tuple[float, float, float] , scheme: str, Ei: float=1e+6, B_iso: float=0) -> tuple[np.ndarray, np.ndarray]:
     r"""
     Returns matrix of energies and inelastic neutron scattering spectral weights for all possible transitions at given temperature.
     
     The spectral weight is calculated by equation from Enderle book following Stephane Raymond article.
     
-    | :math:`S(\vec{Q},\omega) = N (\gamma r_0)^2 f^2_m(Q) e^{-2W(Q)} \sum_{if} \frac{k_f}{k_i} p_i |<\lambda_f|J_\perp|\lambda_i>|^2 \delta(E_i - E_f - \hbar \omega)`
+    | :math:`S(\vec{Q},\omega) = N (\gamma r_0)^2 f^2_m(Q) e^{-W(Q)} \sum_{if} \frac{k_f}{k_i} p_i |<\lambda_f|J_\perp|\lambda_i>|^2 \delta(E_i - E_f - \hbar \omega)`
     
     where:
 
     | :math:`N (\gamma r_0)^2` : ignored, acts as units.
     | :math:`f^2_m(Q)` : magnetic form factor, taken from internal tables in ``mikibox.crysfipy.Ion`` class.
-    | :math:`e^{-2W(Q)}` : :math:`W(Q)` is the Debye-Waller factor. It is quite problematic, is set to 1 at the moment.
+    | :math:`e^{-W(Q)}` : Debye-Waller factor, where :math:`W(Q) = \frac{1}{2} B Q^2`. :math:`B = B_{iso}` is the isotropic mean-square displacement obtained from crystal structure refinement.
     | :math:`\frac{k_f}{k_i}` : scaling factor calculated from energy, which is used more widely :math:`\frac{k_f}{k_i} = \sqrt{1-\frac{\Delta E}{E_i}}`. there is a minus under the square root, because positive energy transfer corresponds to neutron energy loss.
     | :math:`p_i` : Boltzmann population factor.
     | :math:`|<\lambda_f|J_\perp|\lambda_i>|^2` : matrix elements, exact description depends on ``Q``, see below.
@@ -76,7 +76,7 @@ def neutronint(cefion: CEFion, temperature: float, Q: tuple[float, float, float]
     f2m = cefion.ion.mff(np.linalg.norm(Q))**2
     
     # Debye-Waller factor
-    eDW = 1
+    eDW = np.exp(-1/3 * np.linalg.norm(Q)**2 * B_iso)
     
     # Tricky way to create a 2D array of energies associated with transitions between levels
     jumps = cefion.energies - cefion.energies[np.newaxis].T    
@@ -231,42 +231,41 @@ def susceptibility(cefion: CEFion, temperatures: np.ndarray, Hfield_direction: t
         
     return susceptibility
         
-        
+
 def thermodynamics(cefion: CEFion, T: np.ndarray):
     r"""
     Calculate the fundamental thermodynamic values as a function of temperature.
     
-    These functions are calculated alltogether taking advantage of the fact that thermodynamics can be determined from the partition function :math:`Z`, upon differentiation on :math:`\beta`, where :math:`\beta = \frac{1}{k_B T}`.
+    These functions are calculated alltogether taking advantage of the fact that thermodynamics can be determined from the partition function :math:`Z` taken as the weighing function and caluclation moments of <E^n>.
     
     | Partition function: :math:`Z = \sum_n e^{-\beta E_n}`
-    | Average energy: :math:`\langle E \rangle = - \frac{\partial Z}{\partial \beta}`
-    | Entropy: :math:`S = k_B ( \ln Z - \beta \frac{\partial Z}{\partial \beta} )`
-    | Heat capacity: :math:`C_V = k_B \beta^2 \frac{\partial^2 Z}{\partial \beta^2}`
+    | Average (internal) energy: :math:`\langle E \rangle = U = \frac{1}{Z} \sum_n E_n e^{-\beta E_n}`
+    | Free energy: :math:`F = -T ln(Z)`
+    | Entropy: :math:`S = (U-F)/T`
+    | Specific heat: :math:`C_V = (<E^2> - <E>)/T^2`
     
     Parameters:
         cefion : :obj:`crysfipy.CEFion`
             Rare-earth ion in crystal field
         T : ndarray
-            Temperature
+            Temperature in Kelvin
 
             
     Returns:
         Z, E, S CV : The partition function, average energy (internal energy), entropy and heat capacity, respectively.
     """
     Z = np.zeros(len(T))
-    beta = C.meV2K/T
+    E = np.zeros(len(T))
+    E2 = np.zeros(len(T))
     
     for En in cefion.energies:
-        Z += np.exp(-En*beta)
-        
+        Z += np.exp(-En*C.meV2K/T)
+        E += En*np.exp(-En*C.meV2K/T)
+        E2 += En*En*np.exp(-En*C.meV2K/T)
 
-    dlogZ = np.gradient(np.log(Z), beta)
-    d2logZ = - np.gradient(dlogZ, beta)
-    
-    E = -dlogZ
-    S = np.log(Z)-beta*dlogZ
-    Cv = beta**2 * d2logZ
-    
+    E /= Z
+    F = -T*np.log(Z)
+    S = (E-F)/T
+    Cv = (E2-E**2)/T**2
+            
     return Z, E, S, Cv
-
-    

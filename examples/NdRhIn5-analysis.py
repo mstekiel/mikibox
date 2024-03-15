@@ -79,4 +79,4 @@ ax.plot(fields, Mc, marker='o', color='blue',label='H || [001]')
 
 ax.legend(title=f'NdRhIn$_5$, T={temperature} K')
 
-fig.savefig('NdRhIn5-mikibox.png',dpi=200)
+fig.savefig('./examples/NdRhIn5-mikibox.png',dpi=200)

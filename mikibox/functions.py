@@ -43,20 +43,20 @@ def gauss_satellites_bkg(x,x0,xs,As,sigmas,bkg):
 # All of them are right-handed
 def rotate(n, angle):
     '''
-    Return a matrix representing the rotation around vector {n} by {angle} radians.
-    Length of the {n} vector does not matter.
+    Return a matrix representing the rotation around vector `n` by `angle` radians.
+    Length of the `n` vector does not matter.
     '''
     _, theta, phi = cartesian2spherical(n)
 
     return np.matmul(Rz(phi), np.matmul(Ry(theta), np.matmul(Rz(angle), np.matmul(Ry(-theta), Rz(-phi) ))))
     
-def Rx(alpha):
+def Rx(alpha: float) -> np.ndarray:
     '''Matrix of right-handed rotation around x-axis [1,0,0] by angle alpha in radians.'''
     sa = np.sin(alpha)
     ca = np.cos(alpha)
     return np.array([[1,0,0],[0,ca,-sa],[0,sa,ca]])
     
-def Ry(alpha):
+def Ry(alpha: float) -> np.ndarray:
     '''Matrix of right-handed rotation around y-axis [0,1,0] by angle alpha in radians.'''
     sa = np.sin(alpha)
     ca = np.cos(alpha)
@@ -93,7 +93,7 @@ def norm(x, **kwargs):
     
 def angle(v1: list[float], v2: list[float]) -> float:
     '''
-    Return the angle between two vectors
+    Return the angle in radians between two vectors
     '''
     # Clip is required to deal with floating points.
     return np.arccos(np.clip( np.dot(v1,v2)/norm(v1)/norm(v2), -1, 1))

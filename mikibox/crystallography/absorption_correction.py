@@ -49,7 +49,7 @@ class AbsorptionCorrection():
         
         
     def __str__(self):
-        return str(self.lattice_parameters)
+        return str(self.lattice.lattice_parameters)
 
     #
     # Helper functions
